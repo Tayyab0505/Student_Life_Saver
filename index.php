@@ -63,6 +63,15 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                 <h1>Student<br><span>Life Saver</span> </h1>
                 <p>Your all-in-one academic companion. Track classes, assignments, expenses, sleep, and your overall
                     progress — all in one place.</p>
+
+                    <!-- Feature pills -->
+                     <div>
+                        <div>Class Schedule</div>
+                        <div>Assignment Tracker</div>
+                        <div>Expense Tracker</div>
+                        <div>Sleep Tracker</div>
+                        <div>Progress Dashboard</div>
+                     </div>
             </div>
         </div>
     </div>
