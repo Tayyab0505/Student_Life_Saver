@@ -3,6 +3,9 @@
 session_start();
 require_once 'db.php';
 
+$error = "";
+$success = "";
+
 // Handle register form
 
 if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['action'] === 'register'){
@@ -20,7 +23,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
         $error = 'Please enter a valid email address.';
     } elseif (strlen($password) < 6) {
         $error = 'Password must be atleast 6 characters.';
-    } elseif($password == $confirm) {
+    } elseif($password !== $confirm) {
         $error = 'Passwords do not match';
     } else {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
@@ -35,7 +38,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             $stmt->execute([$name, $email, $hashed]);
  
-            $success    = 'Account created! You can now log in.';
+            $success = 'Account created! You can now log in.';
             $active_tab = 'login';  // Switch to login tab after success
         }
     }
@@ -79,6 +82,47 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                     <div>Sleep Tracker</div>
                     <div>Progress Dashboard</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Right panel form -->
+        <div class="auth-right">
+            <div class="auth-form-wrap">
+                <!-- Mobile logo -->
+                <div class="d-lg-none text-center mb-4">
+                    <i class="bi bi-mortarboard-fill" style="font-size:2.5rem; color:var(--primary)"></i>
+                    <h4 class="fw-bold mt-2" style="font-family:'Sora',sans-serif;">Student Life Saver</h4>
+                </div>
+
+                <!-- Alerts -->
+                <?php if ($error): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <?= htmlspecialchars($error) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php endif; ?>
+
+                <?php if($success): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <?= htmlspecialchars($success) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php endif; ?>
+
+                <!-- Tab -->
+                <ul class="nav nav-pills auth-tabs mb-4" id="auth-tabs">
+                    <li class="nav-item flex-fill">
+                        <button class="nav-link <?= $active_tab === 'login' ? 'active' : '' ?> w-100"
+                            data-bs-toggle="pill" data-bs-target="#loginTab">Sign In</button>
+                    </li>
+
+                    <li class="nav-item flex-fill">
+                        <button class="nav-link <?= $active_tab === 'register' ? 'active' : '' ?> w-100"
+                            data-bs-toggle="pill" data-bs-target="#registerTab">Create Account</button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
