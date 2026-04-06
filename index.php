@@ -111,7 +111,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                 </div>
                 <?php endif; ?>
 
-                <!-- Tab -->
+                <!-- Tabs -->
                 <ul class="nav nav-pills auth-tabs mb-4" id="auth-tabs">
                     <li class="nav-item flex-fill">
                         <button class="nav-link <?= $active_tab === 'login' ? 'active' : '' ?> w-100"
@@ -123,6 +123,47 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                             data-bs-toggle="pill" data-bs-target="#registerTab">Create Account</button>
                     </li>
                 </ul>
+
+                <div class="tab-content">
+                    <!-- Login tab -->
+                    <div class="tab-pane fade <?= $active_tab === 'login' ? 'show active' : '' ?>" id="loginTab">
+                        <h5 class="auth-heading">Welcome back</h5>
+                        <p class="auth-sub">Sign In to continue to your Dashboard.</p>
+
+                        <form method="post" action="index.php" novalidate>
+                            <input type="hidden" name="action" value="login">
+
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"> <i class="bi bi-envelope"></i> </span>
+                                    <input type="email" name="email" class="form-control"
+                                        placeholder="you@university.edu"
+                                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"> <i class="bi bi-lock"></i> </span>
+                                    <input type="password" name="password" id="loginPass" class="form-control"
+                                        placeholder="*******" required>
+
+                                    <!-- Toggle password visibility -->
+                                    <button class="input-group-text toggle-pass" type="button" data-target="loginPass">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                Sign In <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                </div>
             </div>
         </div>
     </div>
