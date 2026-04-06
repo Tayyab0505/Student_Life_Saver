@@ -1,0 +1,72 @@
+:root {
+    --primary: #4f46e5;
+    /* indigo */
+    --primary-light: #6366f1;
+    --primary-dark: #3730a3;
+    --accent: #10b981;
+    /* emerald for success */
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --sidebar-bg: #1e1b4b;
+    /* dark indigo */
+    --sidebar-text: rgba(255, 255, 255, 0.75);
+    --sidebar-active: #ffffff;
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 8px 32px rgba(79, 70, 229, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Sora', sans-serif;
+}
+
+/* Auth page  */
+.auth-body {
+    background: var(--bg);
+    min-height: 100vh;
+}
+
+.auth-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left branding panel */
+.auth-left {
+    width: 45%;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+}
