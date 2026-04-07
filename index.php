@@ -75,12 +75,12 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                     progress — all in one place.</p>
 
                 <!-- Feature pills -->
-                <div>
-                    <div>Class Schedule</div>
-                    <div>Assignment Tracker</div>
-                    <div>Expense Tracker</div>
-                    <div>Sleep Tracker</div>
-                    <div>Progress Dashboard</div>
+                <div class="feature-list mt-4">
+                    <div class="feature-pill"><i class="bi bi-calendar-week"></i>Class Schedule</div>
+                    <div class="feature-pill"><i class="bi bi-journal-check"></i>Assignment Tracker</div>
+                    <div class="feature-pill"><i class="bi bi-wallet2"></i>Expense Tracker</div>
+                    <div class="feature-pill"><i class="bi bi-moon-stars"></i>Sleep Tracker</div>
+                    <div class="feature-pill"><i class="bi bi-bar-chart-line"></i>Progress Dashboard</div>
                 </div>
             </div>
         </div>
