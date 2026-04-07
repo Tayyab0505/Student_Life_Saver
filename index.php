@@ -163,7 +163,52 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                         </form>
                     </div>
 
-                    
+                    <!-- Register Tab -->
+                    <div class="tab-pane fade <?= $active_tab === 'register' ? 'show active' : '' ?>" id="registerTab">
+                        <h5 class="auth-heading">Create your account ✨</h5>
+                        <p class="auth-sub">It's free and take less then a minute.</p>
+
+                        <form method="post" action="index.php" novalidate>
+                            <input type="hidden" name="action" value="register">
+
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="name" class="form-control" placeholder="Your full name"
+                                        value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="regPass" class="form-control"
+                                        placeholder="Min. 6 characters" required />
+                                    <button class="input-group-text toggle-pass" type="button" data-target="regPass">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" name="confirm_password" id="regConfirm" class="form-control"
+                                        placeholder="Repeat your password" required />
+                                    <button class="input-group-text toggle-pass" type="button" data-target="regConfirm">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                Create Account <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
 
                 </div>
             </div>
