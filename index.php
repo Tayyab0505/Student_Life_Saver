@@ -216,6 +216,23 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Toggle show/hide password
+        document.querySelectorAll('.toggle-pass').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'bi bi-eye-slash'
+                } else {
+                    input.type = 'password';
+                    icon.className = 'bi bi-eye';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
