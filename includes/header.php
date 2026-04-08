@@ -32,28 +32,34 @@ $active_page = $active_page ?? '';
             <a href="../dashboard.php" class="nav-item <?= $active_page === 'dashboard' ? 'active' : '' ?>"><i
                     class="bi bi-speedometer2"></i> <span>Dashboard</span> </a>
         </nav>
-    </aside>
 
-    <nav class="sidebar-nav">
-        <a href="../dashboard.php" class="nav-item <?= $active_page==='dashboard'   ? 'active':'' ?>">
-            <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
-        </a>
-        <a href="../pages/schedule.php" class="nav-item <?= $active_page==='schedule'    ? 'active':'' ?>">
-            <i class="bi bi-calendar-week"></i> <span>Schedule</span>
-        </a>
-        <a href="../pages/assignments.php" class="nav-item <?= $active_page==='assignments' ? 'active':'' ?>">
-            <i class="bi bi-journal-check"></i> <span>Assignments</span>
-        </a>
-        <a href="../pages/expenses.php" class="nav-item <?= $active_page==='expenses'    ? 'active':'' ?>">
-            <i class="bi bi-wallet2"></i> <span>Expenses</span>
-        </a>
-        <a href="../pages/sleep.php" class="nav-item <?= $active_page==='sleep'       ? 'active':'' ?>">
-            <i class="bi bi-moon-stars"></i> <span>Sleep & Routine</span>
-        </a>
-        <a href="../pages/progress.php" class="nav-item <?= $active_page==='progress'    ? 'active':'' ?>">
-            <i class="bi bi-bar-chart-line"></i> <span>Progress</span>
-        </a>
-    </nav>
+        <nav class="sidebar-nav">
+            <a href="../dashboard.php" class="nav-item <?= $active_page==='dashboard'   ? 'active':'' ?>">
+                <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+            </a>
+            <a href="../pages/schedule.php" class="nav-item <?= $active_page==='schedule'    ? 'active':'' ?>">
+                <i class="bi bi-calendar-week"></i> <span>Schedule</span>
+            </a>
+            <a href="../pages/assignments.php" class="nav-item <?= $active_page==='assignments' ? 'active':'' ?>">
+                <i class="bi bi-journal-check"></i> <span>Assignments</span>
+            </a>
+            <a href="../pages/expenses.php" class="nav-item <?= $active_page==='expenses'    ? 'active':'' ?>">
+                <i class="bi bi-wallet2"></i> <span>Expenses</span>
+            </a>
+            <a href="../pages/sleep.php" class="nav-item <?= $active_page==='sleep'       ? 'active':'' ?>">
+                <i class="bi bi-moon-stars"></i> <span>Sleep & Routine</span>
+            </a>
+            <a href="../pages/progress.php" class="nav-item <?= $active_page==='progress'    ? 'active':'' ?>">
+                <i class="bi bi-bar-chart-line"></i> <span>Progress</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="../logout.php" class="nav-item text-danger">
+                <i class="bi bi-box-arrow-left"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
 
 </body>
 
