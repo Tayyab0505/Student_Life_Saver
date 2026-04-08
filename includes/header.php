@@ -61,6 +61,37 @@ $active_page = $active_page ?? '';
         </div>
     </aside>
 
+    <div class="main-wrapper">
+        <!-- Topbar -->
+         <header  class="topbar">
+            <!-- Hamburger for mobile -->
+             <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+             </button>
+
+             <div class="topbar-title">
+                <?php 
+                <!-- Map names to display title -->
+                 $titles = [
+                 'dashboard' => 'Dashboard',
+                 'schedule' => 'Class Schedule',
+                 'assignments' => 'Assignments',
+                 'expenses' => 'Expense Tracker'
+                 'sleep' => 'Sleep & Routine'
+                 'progress' => 'Progress Report,'
+                ];
+                echo $titles[$active_page] ?? 'Student LifeSaver';
+                ?>
+             </div>
+
+             <div class="topbar-user">
+                <i class="bi bi-person-circle"></i>
+                <span><?= htmlspecialchars($current_user_name) ?></span>
+             </div>
+         </header>
+         
+    </div>
+
 </body>
 
 </html>
