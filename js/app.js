@@ -9,4 +9,11 @@ $(document).ready(function () {
         $('#sidebar').removeClass('open');
         $(this).removeClass('show');
     });
+
+    // Auto dismiss alerts
+    setTimeout(() => {
+        $('.alert-dismissible').fadeOut(600, function () {
+            $(this).remove();
+        });
+    }, 4000);
 });
