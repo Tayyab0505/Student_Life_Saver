@@ -16,4 +16,13 @@ $(document).ready(function () {
             $(this).remove();
         });
     }, 4000);
+
+    // Confirm before delete
+    $(document).on('click', ['data-confirm'], function (e) {
+        const msg = $(this).data('confirm') || 'Are you sure?';
+        if (!confirm(msg)) {
+            e.preventDefault();
+        }
+    });
+    
 });
