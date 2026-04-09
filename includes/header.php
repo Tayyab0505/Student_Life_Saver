@@ -63,13 +63,13 @@ $active_page = $active_page ?? '';
 
     <div class="main-wrapper">
         <!-- Topbar -->
-         <header  class="topbar">
+        <header class="topbar">
             <!-- Hamburger for mobile -->
-             <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+            <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
                 <i class="bi bi-list"></i>
-             </button>
+            </button>
 
-             <div class="topbar-title">
+            <div class="topbar-title">
                 <?php 
                 <!-- Map names to display title -->
                  $titles = [
@@ -82,15 +82,23 @@ $active_page = $active_page ?? '';
                 ];
                 echo $titles[$active_page] ?? 'Student LifeSaver';
                 ?>
-             </div>
+            </div>
 
-             <div class="topbar-user">
+            <div class="topbar-user">
                 <i class="bi bi-person-circle"></i>
-                <span><?= htmlspecialchars($current_user_name) ?></span>
-             </div>
-         </header>
-         
+                <span>
+                    <?= htmlspecialchars($current_user_name) ?>
+                </span>
+            </div>
+        </header>
     </div>
+
+    <!-- Sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../js/app.js"></script>
 
 </body>
 
