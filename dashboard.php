@@ -138,6 +138,46 @@ require_once 'includes/header.php';
         </div>
     </div>
 
+    <!-- Upcoming Assignments -->
+    <div class="col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-custom-header">
+                <span><i class="bi bi-alarm me-2" style="color:var(--warning)"></i>Due Soon</span>
+                <a href="pages/assignments.php" class="card-header-link">View all</a>
+            </div>
+            <div class="card-custom-body">
+                <?php if (empty($upcoming)): ?>
+                    <div class="empty-card-msg">
+                        <i class="bi bi-check-circle"></i>
+                        <p>No assignments due<br><span>in the next 7 days!</span></p>
+                    </div>
+                <?php else: ?>
+                    <div class="assign-list">
+                        <?php foreach ($upcoming as $a):
+                            $days_left = (int) ((strtotime($a['due_date']) - strtotime($today_date)) / 86400);
+                            $urgency = $days_left === 0 ? 'high' : ($days_left <= 2 ? 'medium' : 'low');
+                            ?>
+                            <div class="assign-item">
+                                <div class="assign-dot dot-<?= $urgency ?>"></div>
+                                <div class="assign-info">
+                                    <div class="assign-title">
+                                        <?= htmlspecialchars($a['title']) ?>
+                                    </div>
+                                    <div class="assign-sub">
+                                        <?= htmlspecialchars($a['subject'] ?? '—') ?>
+                                    </div>
+                                </div>
+                                <div class="assign-due due-<?= $urgency ?>">
+                                    <?= $days_left === 0 ? 'Today' : ($days_left === 1 ? 'Tomorrow' : "In {$days_left}d") ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-12">
             <div class="card card-custom p-4 text-center text-muted">
