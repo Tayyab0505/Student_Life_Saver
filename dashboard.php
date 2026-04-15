@@ -10,6 +10,26 @@ $today = date('l');
 $today_date = date('Y-m-d');
 $month_year = date('Y-m');
 
+// Stat 1: Pending assignments
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM assignments WHERE user_id = ? AND status != 'Completed'");
+$stmt->execute([$current_user_id]);
+$pending_assignments = $stmt->fetchColumn();
+
+// Stat 2: Classes today
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM schedule WHERE user_id = ? AND day_of_week = ?");
+$stmt->execute([$current_user_id, $today]);
+$classes_today = $stmt->fetchColumn();
+
+// Stat 3: Total spending this month
+$stmt = $pdo->prepare("SELECT COALESCE(SUM(amount),0) FROM expenses WHERE user_id = ? AND DATE_FORMAT(expense_date,'%Y-%m') = ?");
+$stmt->execute([$current_user_id, $month_year]);
+$monthly_spending = $stmt->fetchColumn();
+
+// Stat 4: Average sleep (last 7 days)
+$stmt = $pdo->prepare("SELECT COALESCE(AVG(hours_slept),0) FROM sleep_log WHERE user_id = ? AND log_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+$stmt->execute([$current_user_id]);
+$avg_sleep = round($stmt->fetchColumn(), 1);
+
 require_once 'includes/header.php';
 ?>
 
