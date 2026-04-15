@@ -18,7 +18,7 @@ $active_page = $active_page ?? '';
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="/STUDENT_LIFE_SAVER/css/style.css" />
 </head>
 
 <body>
@@ -31,12 +31,14 @@ $active_page = $active_page ?? '';
         </div>
 
         <nav class="sidebar-nav">
-            <a href="../dashboard.php" class="nav-item <?= $active_page === 'dashboard' ? 'active' : '' ?>"><i
-                    class="bi bi-speedometer2"></i> <span>Dashboard</span> </a>
+            <a href="/STUDENT_LIFE_SAVER/dashboard.php"
+                class="nav-item <?= $active_page === 'dashboard' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span> </a>
         </nav>
 
         <nav class="sidebar-nav">
-            <a href="../dashboard.php" class="nav-item <?= $active_page === 'dashboard' ? 'active' : '' ?>">
+            <a href="/STUDENT_LIFE_SAVER/dashboard.php"
+                class="nav-item <?= $active_page === 'dashboard' ? 'active' : '' ?>">
                 <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
             </a>
             <a href="../pages/schedule.php" class="nav-item <?= $active_page === 'schedule' ? 'active' : '' ?>">
@@ -57,7 +59,7 @@ $active_page = $active_page ?? '';
         </nav>
 
         <div class="sidebar-footer">
-            <a href="../logout.php" class="nav-item text-danger">
+            <a href="/STUDENT_LIFE_SAVER/logout.php" class="nav-item text-danger">
                 <i class="bi bi-box-arrow-left"></i> <span>Logout</span>
             </a>
         </div>
