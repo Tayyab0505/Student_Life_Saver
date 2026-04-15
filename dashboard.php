@@ -93,14 +93,59 @@ require_once 'includes/header.php';
     </div>
 </div>
 
+<!-- THREE WIDGET CARDS -->
 <div class="row g-4">
-    <div class="col-12">
-        <div class="card card-custom p-4 text-center text-muted">
-            <i class="bi bi-hourglass-split" style="font-size:3rem; opacity:0.3;"></i>
-            <p class="mt-3 mb-0">Dashboard content coming in Step 2!<br>
-                For now, make sure your login and register work correctly.</p>
+
+    <!-- Today's Classes -->
+    <div class="col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-custom-header">
+                <span><i class="bi bi-calendar-day me-2" style="color:var(--primary)"></i>Today's Classes</span>
+                <span class="badge-day">
+                    <?= $today ?>
+                </span>
+            </div>
+            <div class="card-custom-body">
+                <?php if (empty($todays_classes)): ?>
+                    <div class="empty-card-msg">
+                        <i class="bi bi-cup-hot"></i>
+                        <p>No classes today.<br><span>Enjoy your free day!</span></p>
+                    </div>
+                <?php else: ?>
+                    <div class="class-list">
+                        <?php foreach ($todays_classes as $cls): ?>
+                            <div class="class-item">
+                                <div class="class-color-bar" style="background:<?= htmlspecialchars($cls['color']) ?>"></div>
+                                <div class="class-info">
+                                    <div class="class-subject">
+                                        <?= htmlspecialchars($cls['subject']) ?>
+                                    </div>
+                                    <div class="class-meta">
+                                        <i class="bi bi-clock"></i>
+                                        <?= date('g:i A', strtotime($cls['start_time'])) ?> –
+                                        <?= date('g:i A', strtotime($cls['end_time'])) ?>
+                                        <?php if ($cls['room']): ?>
+                                            &nbsp;·&nbsp; <i class="bi bi-geo-alt"></i>
+                                            <?= htmlspecialchars($cls['room']) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</div>
 
-<?php require_once 'includes/footer.php'; ?>
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card card-custom p-4 text-center text-muted">
+                <i class="bi bi-hourglass-split" style="font-size:3rem; opacity:0.3;"></i>
+                <p class="mt-3 mb-0">Dashboard content coming in Step 2!<br>
+                    For now, make sure your login and register work correctly.</p>
+            </div>
+        </div>
+    </div>
+
+    <?php require_once 'includes/footer.php'; ?>
