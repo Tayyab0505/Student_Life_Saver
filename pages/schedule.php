@@ -37,3 +37,14 @@ require_once '../includes/header.php'
     <?php endif; ?>
 <?php endif; ?>
 
+<!-- ── Page header ──────────────────────────────────────────── -->
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h4 class="page-title mb-1">Class Schedule</h4>
+        <p class="text-muted mb-0" style="font-size:0.85rem;">Manage your weekly timetable.</p>
+    </div>
+    <button class="btn-dash-action" id="toggleFormBtn">
+        <i class="bi bi-<?= $edit_class ? 'pencil' : 'plus-lg' ?>"></i>
+        <?= $edit_class ? 'Edit Class' : 'Add Class' ?>
+    </button>
+</div>
