@@ -3,12 +3,20 @@
 session_start();
 require_once 'db.php';
 
+// If already logged in → skip this page and go to dashboard
+if (isset($_SESSION['user_id'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+
 $error = "";
 $success = "";
+$active_tab = 'login'; // tab to show by default
+
 
 // Handle register form
-
-if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['action'] === 'register'){
+// $_SERVER---ye aik superglobal array h jo server aur request ki info deta h
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'register') {
     $active_tab = 'register';  //keep register tab open if there is an error
 
     $name = trim($_POST['name'] ?? '');
@@ -17,13 +25,13 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
     $confirm = trim($_POST['confirm_password'] ?? '');
 
     // Basic server-side validation
-    if (empty($name) || empty($email) || empty($password)) {
+    if (empty($name) || empty($email) || empty($password || empty($confirm))) {
         $error = 'All fields are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Please enter a valid email address.';
     } elseif (strlen($password) < 6) {
         $error = 'Password must be atleast 6 characters.';
-    } elseif($password !== $confirm) {
+    } elseif ($password !== $confirm) {
         $error = 'Passwords do not match';
     } else {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
@@ -34,16 +42,41 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
         } else {
             // Hash the password before storing — NEVER store plain text passwords
             $hashed = password_hash($password, PASSWORD_BCRYPT);
- 
+
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             $stmt->execute([$name, $email, $hashed]);
- 
+
             $success = 'Account created! You can now log in.';
             $active_tab = 'login';  // Switch to login tab after success
         }
     }
 }
 
+// Handle login form
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'login') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        $error = 'All fields are required';
+    } else {
+        // Fetch user by email 
+        $stmt = $pdo->prepare('Select * from user where email = ?');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['name'];
+
+            header('Location: dashboard.php');
+            exit;
+        } else {
+            $error = 'Invalid email or password';
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -96,19 +129,19 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
 
                 <!-- Alerts -->
                 <?php if ($error): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-circle me-2"></i>
-                    <?= htmlspecialchars($error) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <?= htmlspecialchars($error) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 <?php endif; ?>
 
-                <?php if($success): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i>
-                    <?= htmlspecialchars($success) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <?php if ($success): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <?= htmlspecialchars($success) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 <?php endif; ?>
 
                 <!-- Tabs -->
@@ -177,6 +210,16 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['act
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
                                     <input type="text" name="name" class="form-control" placeholder="Your full name"
                                         value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"> <i class="bi bi-envelope"></i> </span>
+                                    <input type="email" name="email" class="form-control"
+                                        placeholder="you@university.edu"
+                                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                                 </div>
                             </div>
 
