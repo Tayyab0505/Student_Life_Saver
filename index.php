@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $error = 'All fields are required';
     } else {
         // Fetch user by email 
-        $stmt = $pdo->prepare('Select * from user where email = ?');
+        $stmt = $pdo->prepare('Select * from users where email = ?');
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
