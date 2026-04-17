@@ -22,7 +22,7 @@ $colors = [
     '#ec4899' => 'Pink',
 ];
 
-// ── Handle DELETE ─────────────────────────────────────────────
+// Handle DELETE
 if (isset($_GET['delete'])) {
     $del_id = (int) $_GET['delete'];
     // Make sure the class belongs to THIS user before deleting
@@ -31,6 +31,19 @@ if (isset($_GET['delete'])) {
     header('Location: schedule.php?msg=deleted');
     exit;
 }
+
+// Load class for editing 
+if (isset($_GET['edit'])) {
+    $edit_id = (int) $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM schedule WHERE id = ? AND user_id = ?");
+    $stmt->execute([$edit_id, $current_user_id]);
+    $edit_class = $stmt->fetch();
+}
+
+// Fetch all classes grouped by day
+$stmt = $pdo->prepare("SELECT * FROM schedule WHERE user_id = ? ORDER BY FIELD(day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'), start_time ASC");
+$stmt->execute([$current_user_id]);
+$all_classes = $stmt->fetchAll();
 
 require_once '../includes/header.php'
     ?>
@@ -47,7 +60,7 @@ require_once '../includes/header.php'
     <?php endif; ?>
 <?php endif; ?>
 
-<!-- ── Page header ──────────────────────────────────────────── -->
+<!-- Page header -->
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
         <h4 class="page-title mb-1">Class Schedule</h4>
