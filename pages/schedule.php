@@ -22,6 +22,16 @@ $colors = [
     '#ec4899' => 'Pink',
 ];
 
+// ── Handle DELETE ─────────────────────────────────────────────
+if (isset($_GET['delete'])) {
+    $del_id = (int) $_GET['delete'];
+    // Make sure the class belongs to THIS user before deleting
+    $stmt = $pdo->prepare("DELETE FROM schedule WHERE id = ? AND user_id = ?");
+    $stmt->execute([$del_id, $current_user_id]);
+    header('Location: schedule.php?msg=deleted');
+    exit;
+}
+
 require_once '../includes/header.php'
     ?>
 
