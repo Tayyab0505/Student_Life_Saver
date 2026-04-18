@@ -178,14 +178,49 @@ require_once 'includes/header.php';
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="card card-custom p-4 text-center text-muted">
-                <i class="bi bi-hourglass-split" style="font-size:3rem; opacity:0.3;"></i>
-                <p class="mt-3 mb-0">Dashboard content coming in Step 2!<br>
-                    For now, make sure your login and register work correctly.</p>
+    <!-- Recent Expenses -->
+    <div class="col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-custom-header">
+                <span><i class="bi bi-receipt me-2" style="color:var(--accent)"></i>Recent Expenses</span>
+                <a href="pages/expenses.php" class="card-header-link">View all</a>
+            </div>
+            <div class="card-custom-body">
+                <?php if (empty($recent_expenses)): ?>
+                    <div class="empty-card-msg">
+                        <i class="bi bi-wallet2"></i>
+                        <p>No expenses logged yet.<br><span>Start tracking today!</span></p>
+                    </div>
+                <?php else: ?>
+                    <?php
+                    $cat_icons = [
+                        'Food' => 'bi-egg-fried',
+                        'Transport' => 'bi-bus-front',
+                        'Books' => 'bi-book',
+                        'Entertainment' => 'bi-controller',
+                        'Health' => 'bi-heart-pulse',
+                        'Other' => 'bi-bag',
+                    ];
+                    ?>
+                    <div class="expense-list">
+                        <?php foreach ($recent_expenses as $exp): ?>
+                            <div class="expense-item">
+                                <div class="expense-icon">
+                                    <i class="bi <?= $cat_icons[$exp['category']] ?? 'bi-bag' ?>"></i>
+                                </div>
+                                <div class="expense-info">
+                                    <div class="expense-title"><?= htmlspecialchars($exp['title']) ?></div>
+                                    <div class="expense-cat"><?= $exp['category'] ?></div>
+                                </div>
+                                <div class="expense-amount">$<?= number_format($exp['amount'], 2) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <?php require_once 'includes/footer.php'; ?>
+</div>
+
+<?php require_once 'includes/footer.php'; ?>
