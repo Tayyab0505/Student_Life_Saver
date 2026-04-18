@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $confirm = trim($_POST['confirm_password'] ?? '');
 
     // Basic server-side validation
-    if (empty($name) || empty($email) || empty($password || empty($confirm))) {
+    if (empty($name) || empty($email) || empty($password) || empty($confirm)) {
         $error = 'All fields are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Please enter a valid email address.';
