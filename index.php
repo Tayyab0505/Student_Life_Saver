@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                 <div class="tab-content">
                     <!-- Login tab -->
-                    <div class="tab-pane fade <?= $active_tab === 'login' ? 'show active' : '' ?>" id="loginTab">
+                    <div class="tab-pane <?= $active_tab === 'login' ? 'show active' : '' ?>" id="loginTab">
                         <h5 class="auth-heading">Welcome back</h5>
                         <p class="auth-sub">Sign In to continue to your Dashboard.</p>
 
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     </div>
 
                     <!-- Register Tab -->
-                    <div class="tab-pane fade <?= $active_tab === 'register' ? 'show active' : '' ?>" id="registerTab">
+                    <div class="tab-pane <?= $active_tab === 'register' ? 'show active' : '' ?>" id="registerTab">
                         <h5 class="auth-heading">Create your account ✨</h5>
                         <p class="auth-sub">It's free and take less then a minute.</p>
 
@@ -258,6 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         </div>
     </div>
 
+    <?php require_once 'includes/footer.php' ?>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -276,6 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             });
         });
     </script>
+
 </body>
 
 </html>

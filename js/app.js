@@ -1,3 +1,4 @@
+console.log("app.js loaded");
 $(document).ready(function () {
     // Sidebar toggle
     $('#sidebarToggle').on('click', function () {
@@ -11,18 +12,22 @@ $(document).ready(function () {
     });
 
     // Auto dismiss alerts
-    setTimeout(() => {
-        $('.alert-dismissible').fadeOut(600, function () {
-            $(this).remove();
-        });
-    }, 4000);
+    $(document).ready(function () {
+        if ($('.alert-dismissible').length > 0) {
+            setTimeout(() => {
+                $('.alert-dismissible').fadeOut(600, function () {
+                    $(this).remove();
+                });
+            }, 2000);
+        };
+    });
 
     // Confirm before delete
     $(document).on('click', '[data-confirm]', function (e) {
         const msg = $(this).data('confirm') || 'Are you sure?';
         if (!confirm(msg)) {
             e.preventDefault();
-        }
+        };
     });
-    
+
 });

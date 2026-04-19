@@ -71,3 +71,14 @@ require_once '../includes/header.php'
         <?= $edit_class ? 'Edit Class' : 'Add Class' ?>
     </button>
 </div>
+
+<!-- ADD / EDIT FORM (collapsible)-->
+<div class="form-panel <?= ($edit_class || !empty($errors)) ? 'open' : '' ?>" id="scheduleForm">
+    <div class="form-panel-inner">
+        <h6>
+            <i class="bi bi-<?= $edit_class['id'] ? 'pencil' : 'plus-circle' ?> me-2"></i>
+            <?= $edit_class && $edit_class['id'] ? 'Edit Class' : 'Add New Class' ?>
+        </h6>
+    </div>
+
+</div>
