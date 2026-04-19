@@ -153,10 +153,10 @@ require_once 'includes/header.php';
                     </div>
                 <?php else: ?>
                     <div class="assign-list">
-                        <?php foreach ($upcoming as $a):
-                            $days_left = (int) ((strtotime($a['due_date']) - strtotime($today_date)) / 86400);
-                            $urgency = $days_left === 0 ? 'high' : ($days_left <= 2 ? 'medium' : 'low');
-                            ?>
+                        <?php foreach ($upcoming as $a): //$upcoming ke andar jitni bhi assignments hain, unko ek ek karke $a me daal ke process karo
+                                    $days_left = (int) ((strtotime($a['due_date']) - strtotime($today_date)) / 86400);
+                                    $urgency = $days_left === 0 ? 'high' : ($days_left <= 2 ? 'medium' : 'low');
+                                    ?>
                             <div class="assign-item">
                                 <div class="assign-dot dot-<?= $urgency ?>"></div>
                                 <div class="assign-info">

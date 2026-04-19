@@ -79,6 +79,83 @@ require_once '../includes/header.php'
             <i class="bi bi-<?= $edit_class['id'] ? 'pencil' : 'plus-circle' ?> me-2"></i>
             <?= $edit_class && $edit_class['id'] ? 'Edit Class' : 'Add New Class' ?>
         </h6>
+
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger py-2 mb-3">
+                <?php foreach ($errors as $e): ?>
+                    <div> <i class="bi bi-exclamation-circle me-1"></i><?= htmlspecialchars($e) ?> </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="schedule.php">
+            <!-- Hidden field — if > 0 we're editing, if 0 we're adding -->
+            <input type="hidden" name="edit_id" value="<?= $edit_class['id'] ?? 0 ?>" />
+            <div class="row g-3">
+                <!-- Subject -->
+                <div class="col-sm-6">
+                    <label class="field-label">Subject / Course *</label>
+                    <input type="text" name="subject" class="field-input" placeholder="e.g. Web Application"
+                        value="<?= htmlspecialchars($edit_class['subject'] ?? '') ?>" required />
+                </div>
+
+                <!-- Day -->
+                <div class="col-sm-6">
+                    <label class="field-label">Day of Week *</label>
+                    <select name="day_of_week" class="field-input" required>
+                        <option value="">Select day…</option>
+                        <?php foreach ($days as $d): ?>
+                            <option value="<?= $d ?>" <?= ($edit_class['day_of_week'] ?? '') === $d ? 'selected' : '' ?>>
+                                <?= $d ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Start time -->
+                <div class="col-sm-4">
+                    <label class="field-label">Start Time *</label>
+                    <input type="time" name="start_time" class="field-input"
+                        value="<?= $edit_class['start_time'] ?? '' ?>" required />
+                </div>
+
+                <!-- End time -->
+                <div class="col-sm-4">
+                    <label class="field-label">End Time *</label>
+                    <input type="time" name="end_time" class="field-input" value="<?= $edit_class['end_time'] ?? '' ?>"
+                        required />
+                </div>
+
+                <!-- Room -->
+                <div class="col-sm-4">
+                    <label class="field-label">Room / Location</label>
+                    <input type="text" name="room" class="field-input" placeholder="e.g. Block B - 204"
+                        value="<?= htmlspecialchars($edit_class['room'] ?? '') ?>" />
+                </div>
+
+                <!-- Color picker -->
+                <div class="col-12">
+                    <label class="field-label">Class Color</label>
+                    <div class="color-picker">
+                        <?php foreach ($colors as $hex => $name): ?>
+                            <label class="color-option" title="<?= $name ?>">
+                                <input type="radio" name="color" value="<?= $hex ?>" <?= ($edit_class['color'] ?? '#4f46e5') === $hex ? 'checked' : '' ?> />
+                                <span class="color-swatch" style="background:<?= $hex ?>"></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn-submit-sm">
+                        <i class="bi bi-<?= $edit_class && $edit_class['id'] ? 'check-lg' : 'plus-lg' ?> me-1"></i>
+                        <?= $edit_class && $edit_class['id'] ? 'Save Changes' : 'Add Class' ?>
+                    </button>
+                    <a href="schedule.php" class="btn-cancel-sm">Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
 
 </div>
