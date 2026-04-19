@@ -787,3 +787,241 @@ h6 {
     color: var(--danger);
     white-space: nowrap;
 }
+
+
+/* SCHEDULE PAGE */
+
+/* Collapsible form panel */
+.form-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    margin-bottom: 0;
+}
+
+.form-panel.open {
+    max-height: 600px;
+    margin-bottom: 1.5rem;
+}
+
+.form-panel-inner {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.form-panel-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+}
+
+/* Field styles */
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+}
+
+.field-input {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: var(--text);
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.field-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    background: #fff;
+}
+
+/* Small submit / cancel buttons for forms */
+.btn-submit-sm {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 0.55rem 1.3rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.btn-submit-sm:hover {
+    background: var(--primary-dark);
+}
+
+.btn-cancel-sm {
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.btn-cancel-sm:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+/* Color picker */
+.color-picker {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.color-option {
+    cursor: pointer;
+}
+
+.color-option input {
+    display: none;
+}
+
+.color-swatch {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-option input:checked+.color-swatch {
+    border-color: var(--text);
+    transform: scale(1.25);
+}
+
+.color-option:hover .color-swatch {
+    transform: scale(1.15);
+}
+
+/* Day summary pills row */
+.day-summary-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.day-pill {
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--bg);
+}
+
+.day-pill.has-class {
+    background: rgba(79, 70, 229, 0.08);
+    border-color: rgba(79, 70, 229, 0.25);
+    color: var(--primary);
+}
+
+.day-pill.today {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.day-pill-count {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50px;
+    padding: 0 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.day-pill.today .day-pill-count {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Weekly grid */
+.weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.day-col {
+    min-width: 120px;
+}
+
+.day-col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px 6px 0 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.today-col .day-col-header {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.today-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 0.62rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 50px;
+}
+
+.day-col-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.no-class-slot {
+    color: var(--border);
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 0.75rem 0;
+}

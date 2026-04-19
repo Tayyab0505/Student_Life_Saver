@@ -157,5 +157,84 @@ require_once '../includes/header.php'
             </div>
         </form>
     </div>
-
 </div>
+
+<!-- WEEKLY GRID -->
+<?php if (empty($all_classes)): ?>
+    <div class="empty-state-page">
+        <i class="bi bi-calendar-week"></i>
+        <h5>No classes added yet</h5>
+        <p>Click "Add Class" above to build your timetable.</p>
+    </div>
+<?php else: ?>
+
+    <!-- Summary row: total classes per day pill -->
+    <div class="day-summary-row mb-3">
+        <?php foreach ($days as $d): ?>
+            <div class="day-pill <?= count($by_day[$d]) > 0 ? 'has-class' : '' ?>
+                           <?= $d === date('l') ? 'today' : '' ?>">
+                <span class="day-pill-name">
+                    <?= substr($d, 0, 3) ?>
+                </span>
+                <?php if (count($by_day[$d]) > 0): ?>
+                    <span class="day-pill-count">
+                        <?= count($by_day[$d]) ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Weekly columns grid -->
+    <div class="weekly-grid">
+        <?php foreach ($days as $d): ?>
+            <div class="day-col <?= $d === date('l') ? 'today-col' : '' ?>">
+                <div class="day-col-header">
+                    <span class="day-name">
+                        <?= substr($d, 0, 3) ?>
+                    </span>
+                    <?php if ($d === date('l')): ?>
+                        <span class="today-badge">Today</span>
+                    <?php endif; ?>
+                </div>
+                <div class="day-col-body">
+                    <?php if (empty($by_day[$d])): ?>
+                        <div class="no-class-slot">—</div>
+                    <?php else: ?>
+                        <?php foreach ($by_day[$d] as $cls): ?>
+                            <div class="schedule-card"
+                                style="border-left-color:<?= htmlspecialchars($cls['color']) ?>; background:<?= htmlspecialchars($cls['color']) ?>18">
+                                <div class="sc-subject">
+                                    <?= htmlspecialchars($cls['subject']) ?>
+                                </div>
+                                <div class="sc-time">
+                                    <i class="bi bi-clock"></i>
+                                    <?= date('g:i A', strtotime($cls['start_time'])) ?><br>
+                                    <?= date('g:i A', strtotime($cls['end_time'])) ?>
+                                </div>
+                                <?php if ($cls['room']): ?>
+                                    <div class="sc-room">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <?= htmlspecialchars($cls['room']) ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="sc-actions">
+                                    <a href="schedule.php?edit=<?= $cls['id'] ?>" class="sc-btn sc-edit" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="schedule.php?delete=<?= $cls['id'] ?>" class="sc-btn sc-delete" title="Delete"
+                                        onclick="return confirm('Delete <?= htmlspecialchars(addslashes($cls['subject'])) ?>?')">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+<?php endif; ?>
+
+<?php require_once '../includes/footer.php'; ?>
