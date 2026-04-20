@@ -109,3 +109,15 @@ require_once '../includes/header.php';
                     <?php endforeach; ?>
                 </select>
             </div>
+
+            <!-- Status -->
+            <div class="col-sm-4">
+                <label class="field-label">Status</label>
+                <select name="status" class="field-input">
+                    <?php foreach (['Pending', 'In Progress', 'Completed'] as $s): ?>
+                        <option value="<?= $s ?>" <?= ($edit_item['status'] ?? 'Pending') === $s ? 'selected' : '' ?>>
+                            <?= $s ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
