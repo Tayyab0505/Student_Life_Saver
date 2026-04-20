@@ -82,11 +82,30 @@ require_once '../includes/header.php';
                     <input type="text" name="title" class="field-input" placeholder="e.g. Lab Report Chapter 5"
                         value="<?= htmlspecialchars($edit_item['title'] ?? '') ?>" required />
                 </div>
-                
+
                 <!-- Subject -->
                 <div class="col-sm-6">
                     <label class="field-label">Subject / Course</label>
                     <input type="text" name="subject" class="field-input" placeholder="e.g. Data Structures"
                         value="<?= htmlspecialchars($edit_item['subject'] ?? '') ?>" />
                 </div>
+            </div>
+
+            <!-- Due date -->
+            <div class="col-sm-4">
+                <label class="field-label">Due Date *</label>
+                <input type="date" name="due_date" class="field-input"
+                    value="<?= htmlspecialchars($edit_item['due_date'] ?? '') ?>" min="<?= date('Y-m-d') ?>" required />
+            </div>
+
+            <!-- Priority -->
+            <div class="col-sm-4">
+                <label class="field-label">Priority</label>
+                <select name="priority" class="field-input">
+                    <?php foreach (['Low', 'Medium', 'High'] as $p): ?>
+                        <option value="<?= $p ?>" <?= ($edit_item['priority'] ?? 'Medium') === $p ? 'selected' : '' ?>>
+                            <?= $p ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
