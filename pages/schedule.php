@@ -40,10 +40,75 @@ if (isset($_GET['edit'])) {
     $edit_class = $stmt->fetch();
 }
 
+// Handle ADD / UPDATE form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $subject = trim($_POST['subject'] ?? '');
+    $day = $_POST['day_of_week'] ?? '';
+    $start_time = $_POST['start_time'] ?? '';
+    $end_time = $_POST['end_time'] ?? '';
+    $room = trim($_POST['room'] ?? '');
+    $color = $_POST['color'] ?? '#4f46e5';
+    $post_id = (int) ($_POST['edit_id'] ?? 0);
+
+    // Validation
+    if ($subject === '')
+        $errors[] = 'Subject name is required.';
+    if (!in_array($day, $days))
+        $errors[] = 'Please select a valid day.';
+    if ($start_time === '')
+        $errors[] = 'Start time is required.';
+    if ($end_time === '')
+        $errors[] = 'End time is required.';
+    if ($start_time && $end_time && $start_time >= $end_time)
+        $errors[] = 'End time must be after start time.';
+
+    if (empty($errors)) {
+        if ($post_id > 0) {
+            // UPDATE existing class
+            $stmt = $pdo->prepare("
+                UPDATE schedule
+                SET subject=?, day_of_week=?, start_time=?, end_time=?, room=?, color=?
+                WHERE id=? AND user_id=?
+            ");
+            $stmt->execute([$subject, $day, $start_time, $end_time, $room, $color, $post_id, $current_user_id]);
+            header('Location: schedule.php?msg=updated');
+        } else {
+            // INSERT new class
+            $stmt = $pdo->prepare("
+                INSERT INTO schedule (user_id, subject, day_of_week, start_time, end_time, room, color)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([$current_user_id, $subject, $day, $start_time, $end_time, $room, $color]);
+            header('Location: schedule.php?msg=added');
+        }
+        exit;
+    }
+
+    // If errors, re-populate edit_class so form stays filled
+    $edit_class = [
+        'id' => $post_id,
+        'subject' => $subject,
+        'day_of_week' => $day,
+        'start_time' => $start_time,
+        'end_time' => $end_time,
+        'room' => $room,
+        'color' => $color
+    ];
+}
+
 // Fetch all classes grouped by day
 $stmt = $pdo->prepare("SELECT * FROM schedule WHERE user_id = ? ORDER BY FIELD(day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'), start_time ASC");
 $stmt->execute([$current_user_id]);
 $all_classes = $stmt->fetchAll();
+$by_day = [];
+foreach ($days as $d) {
+    $by_day[$d] = [];
+}
+
+foreach ($all_classes as $cls) {
+    $by_day[$cls['day_of_week']][] = $cls;
+}
 
 require_once '../includes/header.php'
     ?>

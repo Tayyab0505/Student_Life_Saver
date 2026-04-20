@@ -82,5 +82,11 @@ require_once '../includes/header.php';
                     <input type="text" name="title" class="field-input" placeholder="e.g. Lab Report Chapter 5"
                         value="<?= htmlspecialchars($edit_item['title'] ?? '') ?>" required />
                 </div>
-
+                
+                <!-- Subject -->
+                <div class="col-sm-6">
+                    <label class="field-label">Subject / Course</label>
+                    <input type="text" name="subject" class="field-input" placeholder="e.g. Data Structures"
+                        value="<?= htmlspecialchars($edit_item['subject'] ?? '') ?>" />
+                </div>
             </div>
