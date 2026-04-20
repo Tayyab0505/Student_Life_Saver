@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                     <!-- Register Tab -->
                     <div class="tab-pane <?= $active_tab === 'register' ? 'show active' : '' ?>" id="registerTab">
-                        <h5 class="auth-heading">Create your account ✨</h5>
+                        <h5 class="auth-heading">Create your account </h5>
                         <p class="auth-sub">It's free and take less then a minute.</p>
 
                         <form method="post" action="index.php" novalidate>

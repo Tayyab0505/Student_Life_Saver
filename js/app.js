@@ -1,33 +1,65 @@
-console.log("app.js loaded");
 $(document).ready(function () {
-    // Sidebar toggle
+
+    // 1. SIDEBAR TOGGLE
     $('#sidebarToggle').on('click', function () {
         $('#sidebar').addClass('open');
         $('#sidebarOverlay').addClass('show');
     });
-
     $('#sidebarOverlay').on('click', function () {
         $('#sidebar').removeClass('open');
         $(this).removeClass('show');
     });
 
-    // Auto dismiss alerts
-    $(document).ready(function () {
-        if ($('.alert-dismissible').length > 0) {
-            setTimeout(() => {
-                $('.alert-dismissible').fadeOut(600, function () {
-                    $(this).remove();
-                });
-            }, 2000);
-        };
+    setTimeout(function () {
+        $('.alert-dismissible').fadeOut(600, function () {
+            $(this).remove();
+        });
+    }, 2000);
+
+    // 2. CONFIRM BEFORE DELETE
+    // Any link with data-confirm="message" shows a confirm dialog
+    $(document).on('click', '[data-confirm]', function (e) {
+        if (!confirm($(this).data('confirm') || 'Are you sure?')) {
+            e.preventDefault();
+        }
     });
 
-    // Confirm before delete
-    $(document).on('click', '[data-confirm]', function (e) {
-        const msg = $(this).data('confirm') || 'Are you sure?';
-        if (!confirm(msg)) {
-            e.preventDefault();
-        };
-    });
+    // 3. SCHEDULE FORM TOGGLE
+    if ($('#toggleFormBtn').length) {
+        $('#toggleFormBtn').on('click', function () {
+            const panel = $('#scheduleForm');
+            const isOpen = panel.hasClass('open');
+
+            panel.toggleClass('open');
+
+            // Swap button label and icon
+            $(this).html(
+                isOpen
+                    ? '<i class="bi bi-plus-lg"></i> Add Class'
+                    : '<i class="bi bi-x-lg"></i> Close Form'
+            );
+        });
+        if ($('#scheduleForm').hasClass('open')) {
+            $('#toggleFormBtn').html('<i class="bi bi-x-lg"></i> Close Form');
+        }
+    }
+
+    // 4. ASSIGNMENTS FORM TOGGLE
+    if ($('#toggleAssignBtn').length) {
+        $('#toggleAssignBtn').on('click', function () {
+            const panel = $('#assignForm');
+            const isOpen = panel.hasClass('open');
+            panel.toggleClass('open');
+            $(this).html(
+                isOpen
+                    ? '<i class="bi bi-plus-lg"></i> Add Assignment'
+                    : '<i class="bi bi-x-lg"></i> Close Form'
+            );
+        });
+
+        if ($('#assignForm').hasClass('open')) {
+            $('#toggleAssignBtn').html('<i class="bi bi-x-lg"></i> Close Form');
+        }
+    }
 
 });
