@@ -15,7 +15,29 @@ if (isset($_GET['delete'])) {
     exit();
 }
 
+// Handle quick STATUS UPDATE (Mark Complete / Reopen)
+if (isset($_GET['toggle_status'])) {
+    $tog_id = (int) $_GET['toggle_status'];
 
+    $stmt = $pdo->prepare('Select status from assignments where id = ? and user_id = ?');
+    $stmt->execute([$tog_id, $current_user_id]);
+    $row = $stmt->fetch();
+    if ($row) {
+        $new_status = $row['status'] === 'Completed' ? 'Pending' : 'Completed';
+        $stmt = $pdo->prepare("UPDATE assignments SET status = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$new_status, $tog_id, $current_user_id]);
+    }
+    header('Location: assignments.php?msg=updated');
+    exit;
+}
+
+// Load assignment for editing
+if (isset($_GET['edit'])) {
+    $edit_id = (int) $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM assignments WHERE id = ? AND user_id = ?");
+    $stmt->execute([$edit_id, $current_user_id]);
+    $edit_item = $stmt->fetch();
+}
 
 // Counts for filter badges
 $stmt = $pdo->prepare('Select status, count(*) as cnt from assignments where user_id = ? group by status');
