@@ -86,6 +86,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $edit_item = compact('title', 'subject', 'due_date', 'priority', 'status', 'notes') + ['id' => $post_id];
 }
 
+// Filters from URL
+$filter_status = $_GET['filter_status'] ?? 'all';
+$filter_priority = $_GET['filter_priority'] ?? 'all';
+
+// Build query with optional features
+$where = "WHERE user_id = ?";
+$params = [$current_user_id];
+
+if ($filter_status !== 'all') {
+    $where .= " AND status = ?";
+    $params[] = $filter_status;
+}
+if ($filter_priority !== 'all') {
+    $where .= " AND status = ?";
+    $params[] = $filter_priority;
+}
+
+// Order: incomplete first, then by due date soonest
+$stmt = $pdo->prepare("SELECT * FROM assignments $where ORDER BY FIELD(status,'Pending','In Progress','Completed'), due_date ASC");
+
+$stmt->execute($params);
+$assignments = $stmt->fetchAll();
+
+
 // Counts for filter badges
 $stmt = $pdo->prepare('Select status, count(*) as cnt from assignments where user_id = ? group by status');
 $stmt->execute([$current_user_id]);
