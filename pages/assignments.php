@@ -39,6 +39,53 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
+// Handle Add/update form
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $due_date = $_POST['due_date'] ?? '';
+    $priority = $_POST['priority'] ?? 'Medium';
+    $status = $_POST['status'] ?? 'Pending';
+    $notes = trim($_POST['notes'] ?? '');
+    $post_id = (int) ($_POST['edit_id'] ?? 0);
+
+    // Validation
+    if ($title === '') {
+        $errors[] = 'Assignment title is required.';
+    }
+
+    if ($due_date === '') {
+        $errors[] = 'Due date is required.';
+    }
+
+    if (!in_array($priority, ['Low', 'Medium', 'High'])) {
+        $errors[] = 'Invalid priority.';
+    }
+
+    if (!in_array($status, ['Pending', 'In Progress', 'Completed'])) {
+        $errors[] = 'Invalid status.';
+    }
+
+    if (empty($errors)) {
+        if ($post_id > 0) {
+            $stmt = $pdo->prepare(" UPDATE assignments
+                SET title=?, subject=?, due_date=?, priority=?, status=?, notes=?
+                WHERE id=? AND user_id=?");
+            $stmt->execute([$title, $subject, $due_date, $priority, $status, $notes, $post_id, $current_user_id]);
+            header('Location: assignments.php?msg=updated');
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO assignments (user_id, title, subject, due_date, priority, status, notes)
+                VALUES (?,?,?,?,?,?,?) ");
+            $stmt->execute([$current_user_id, $title, $subject, $due_date, $priority, $status, $notes]);
+            header('Location: assignments.php?msg=added');
+        }
+        exit;
+    }
+
+    // Keep form open with entered values on error
+    $edit_item = compact('title', 'subject', 'due_date', 'priority', 'status', 'notes') + ['id' => $post_id];
+}
+
 // Counts for filter badges
 $stmt = $pdo->prepare('Select status, count(*) as cnt from assignments where user_id = ? group by status');
 $stmt->execute([$current_user_id]);
@@ -174,3 +221,5 @@ require_once '../includes/header.php';
         </form>
     </div>
 </div>
+
+<?php require_once '../includes/footer.php'; ?>
