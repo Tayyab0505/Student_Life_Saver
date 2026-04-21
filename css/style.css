@@ -1130,3 +1130,96 @@ h6 {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+
+
+/* STEP 3 — Assignments Tracker styles */
+
+/* color (green for completed) */
+:root {
+    --accent2: #10b981;
+}
+
+/* FILTER BAR */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.filter-btn {
+    padding: 0.35rem 0.9rem;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    background: var(--card-bg);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* Coloured filter variants */
+.filter-btn.filter-warning.active {
+    background: var(--warning);
+    border-color: var(--warning);
+}
+
+.filter-btn.filter-primary.active {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.filter-btn.filter-success.active {
+    background: var(--accent2);
+    border-color: var(--accent2);
+}
+
+.filter-btn.filter-sm {
+    padding: 0.28rem 0.7rem;
+    font-size: 0.75rem;
+}
+
+.filter-count {
+    background: rgba(0, 0, 0, 0.12);
+    color: inherit;
+    border-radius: 50px;
+    padding: 0 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.filter-btn.active .filter-count {
+    background: rgba(255, 255, 255, 0.25);
+}
