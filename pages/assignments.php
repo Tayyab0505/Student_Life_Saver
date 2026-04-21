@@ -246,4 +246,40 @@ require_once '../includes/header.php';
     </div>
 </div>
 
+<!-- Filter Bar -->
+<div class="filter-bar mb-4">
+    <!-- Status Filters -->
+    <div class="filter-group">
+        <?php
+        $statuses = [
+            'all' => ['All', $total_count, ''],
+            'Pending' => ['Pending', $pending_count, 'warning'],
+            'In Progress' => ['In Progress', $progress_count, 'primary'],
+            'Completed' => ['Completed', $completed_count, 'success'],
+        ];
+        foreach ($statuses as $val => [$label, $count, $color]):
+            $active = $filter_status === $val ? 'active' : '';
+            $url = http_build_query(array_merge($_GET, ['filter_status' => $val]));
+            ?>
+            <a href="assignments.php?<?= $url ?>" class="filter-btn <?= $active ?> <?= $color ? "filter-$color" : '' ?>">
+                <?= $label ?>
+                <span class="filter-count"><?= $count ?></span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Priority Filter -->
+    <div class="filter-group">
+        <span class="filter-label">Priority:</span>
+        <?php foreach (['all' => 'All', 'High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low'] as $val => $label):
+            $active = $filter_priority === $val ? 'active' : '';
+            $url = http_build_query(array_merge($_GET, ['filter_priority' => $val]));
+            ?>
+            <a href="assignments.php?<?= $url ?>" class="filter-btn filter-sm <?= $active ?>">
+                <?= $label ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</div>
+
 <?php require_once '../includes/footer.php'; ?>
