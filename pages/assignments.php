@@ -6,6 +6,17 @@ $active_page = 'assignments';
 $errors = [];
 $edit_item = null;
 
+// Handle delete
+if (isset($_GET['delete'])) {
+    $del_id = (int) $_GET['delete'];
+    $stmt = $pdo->prepare('DELETE FROM assignments WHERE id = ? AND user_id = ?');
+    $stmt->execute([$del_id, $current_user_id]);
+    header('Location: assignments.php?msg=deleted');
+    exit();
+}
+
+
+
 // Counts for filter badges
 $stmt = $pdo->prepare('Select status, count(*) as cnt from assignments where user_id = ? group by status');
 $stmt->execute([$current_user_id]);
@@ -43,9 +54,9 @@ require_once '../includes/header.php';
         <h4 class="page-title mb-1">Assignments</h4>
         <p class="text-muted mb-0" style="font-size:0.85rem;">
             <?= $total_count ?> total &nbsp;·&nbsp;
-            <span style="color:var(--warning)"> <?= $pending_count ?> pending </span> &nbsp;·&nbsp;
-            <span style="color:var(--accent)"> <?= $progress_count ?> in progress </span> &nbsp;·&nbsp;
-            <span style="color:var(--accent2)"> <?= $completed_count ?> completed </span>
+            <span style="color:var(--warning)"><?= $pending_count ?> pending</span> &nbsp;·&nbsp;
+            <span style="color:var(--accent)"><?= $progress_count ?> in progress</span> &nbsp;·&nbsp;
+            <span style="color:var(--accent2)"><?= $completed_count ?> completed</span>
         </p>
     </div>
     <button class="btn-dash-action" id="toggleAssignBtn">
@@ -53,7 +64,7 @@ require_once '../includes/header.php';
     </button>
 </div>
 
-<!-- Add/Edit form -->
+<!-- ADD / EDIT FORM -->
 <div class="form-panel <?= ($edit_item || !empty($errors)) ? 'open' : '' ?>" id="assignForm">
     <div class="form-panel-inner">
         <h6 class="form-panel-title">
@@ -64,9 +75,7 @@ require_once '../includes/header.php';
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger py-2 mb-3">
                 <?php foreach ($errors as $e): ?>
-                    <div><i class="bi bi-exclamation-circle me-1"></i>
-                        <?= htmlspecialchars($e) ?>
-                    </div>
+                    <div><i class="bi bi-exclamation-circle me-1"></i><?= htmlspecialchars($e) ?></div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -89,35 +98,57 @@ require_once '../includes/header.php';
                     <input type="text" name="subject" class="field-input" placeholder="e.g. Data Structures"
                         value="<?= htmlspecialchars($edit_item['subject'] ?? '') ?>" />
                 </div>
-            </div>
 
-            <!-- Due date -->
-            <div class="col-sm-4">
-                <label class="field-label">Due Date *</label>
-                <input type="date" name="due_date" class="field-input"
-                    value="<?= htmlspecialchars($edit_item['due_date'] ?? '') ?>" min="<?= date('Y-m-d') ?>" required />
-            </div>
+                <!-- Due date -->
+                <div class="col-sm-4">
+                    <label class="field-label">Due Date *</label>
+                    <input type="date" name="due_date" class="field-input"
+                        value="<?= htmlspecialchars($edit_item['due_date'] ?? '') ?>" min="<?= date('Y-m-d') ?>"
+                        required />
+                </div>
 
-            <!-- Priority -->
-            <div class="col-sm-4">
-                <label class="field-label">Priority</label>
-                <select name="priority" class="field-input">
-                    <?php foreach (['Low', 'Medium', 'High'] as $p): ?>
-                        <option value="<?= $p ?>" <?= ($edit_item['priority'] ?? 'Medium') === $p ? 'selected' : '' ?>>
-                            <?= $p ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <!-- Priority -->
+                <div class="col-sm-4">
+                    <label class="field-label">Priority</label>
+                    <select name="priority" class="field-input">
+                        <?php foreach (['Low', 'Medium', 'High'] as $p): ?>
+                            <option value="<?= $p ?>" <?= ($edit_item['priority'] ?? 'Medium') === $p ? 'selected' : '' ?>>
+                                <?= $p ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <!-- Status -->
-            <div class="col-sm-4">
-                <label class="field-label">Status</label>
-                <select name="status" class="field-input">
-                    <?php foreach (['Pending', 'In Progress', 'Completed'] as $s): ?>
-                        <option value="<?= $s ?>" <?= ($edit_item['status'] ?? 'Pending') === $s ? 'selected' : '' ?>>
-                            <?= $s ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <!-- Status -->
+                <div class="col-sm-4">
+                    <label class="field-label">Status</label>
+                    <select name="status" class="field-input">
+                        <?php foreach (['Pending', 'In Progress', 'Completed'] as $s): ?>
+                            <option value="<?= $s ?>" <?= ($edit_item['status'] ?? 'Pending') === $s ? 'selected' : '' ?>>
+                                <?= $s ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Notes -->
+                <div class="col-12">
+                    <label class="field-label">Notes <span class="text-muted fw-normal"
+                            style="text-transform:none">(optional)</span></label>
+                    <textarea name="notes" class="field-input" rows="2"
+                        placeholder="Any extra details about this assignment…"><?= htmlspecialchars($edit_item['notes'] ?? '') ?></textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn-submit-sm">
+                        <i
+                            class="bi bi-<?= isset($edit_item['id']) && $edit_item['id'] ? 'check-lg' : 'plus-lg' ?> me-1"></i>
+                        <?= isset($edit_item['id']) && $edit_item['id'] ? 'Save Changes' : 'Add Assignment' ?>
+                    </button>
+                    <a href="assignments.php" class="btn-cancel-sm">Cancel</a>
+                </div>
+
             </div>
+        </form>
+    </div>
+</div>
