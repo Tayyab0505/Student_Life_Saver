@@ -282,4 +282,92 @@ require_once '../includes/header.php';
     </div>
 </div>
 
+<!-- Assignments List -->
+<?php if (empty($assignments)): ?>
+    <div class="empty-state-page">
+        <i class="bi bi-journal-x"></i>
+        <h5><?= $filter_status !== 'all' || $filter_priority !== 'all' ? 'No assignments match your filters.' : 'No assignments yet.' ?>
+        </h5>
+        <p><?= $filter_status !== 'all' || $filter_priority !== 'all' ? 'Try changing the filters above.' : 'Click "Add Assignment" to get started.' ?>
+        </p>
+    </div>
+
+<?php else: ?>
+    <div class="assign-cards">
+        <?php foreach ($assignments as $a):
+            $today = date('Y-m-d');
+            $days_left = (int) ((strtotime($a['due_date']) - strtotime($today)) / 86400);
+            $is_done = $a['status'] === 'Completed';
+            $overdue = !$is_done && $days_left < 0;
+            ?>
+
+            <div class="assign-card <?= $is_done ? 'is-done' : '' ?> <?= $overdue ? 'is-overdue' : '' ?>">
+                <!-- Checkbox style toggle -->
+                <a href="assignments.php?toggle_status=<?= $a['id'] ?>" class="assign-check <?= $is_done ? 'checked' : '' ?>"
+                    title="<?= $is_done ? 'Mark as Pending' : 'Mark as Completed' ?>">
+                    <i class="bi bi-<?= $is_done ? 'check-circle-fill' : 'circle' ?>"></i>
+                </a>
+
+                <!-- Main Content -->
+                <div class="assign-card-body">
+                    <div class="assign-card-top">
+                        <span class="assign-card-title <?= $is_done ? 'line-through' : '' ?>">
+                            <?= htmlspecialchars($a['title']) ?>
+                        </span>
+                        <div class="assign-card-badges">
+                            <!-- Priority badge -->
+                            <span class="badge-custom badge-<?= strtolower($a['priority']) ?>">
+                                <?= $a['priority'] ?>
+                            </span>
+                            <!-- Status badge -->
+                            <span class="badge-custom badge-status-<?= strtolower(str_replace(' ', '-', $a['status'])) ?>">
+                                <?= $a['status'] ?>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="assign-card-meta">
+                        <?php if ($a['subject']): ?>
+                            <span><i class="bi bi-book"></i> <?= htmlspecialchars($a['subject']) ?></span>
+                        <?php endif; ?>
+
+                        <!-- Due date with urgency color -->
+                        <span class="due-tag <?= $overdue ? 'overdue' : ($days_left <= 2 ? 'urgent' : '') ?>">
+                            <i class="bi bi-calendar-event"></i>
+                            <?php if ($overdue): ?>
+                                Overdue by <?= abs($days_left) ?> day<?= abs($days_left) != 1 ? 's' : '' ?>
+                            <?php elseif ($days_left === 0): ?>
+                                Due Today
+                            <?php elseif ($days_left === 1): ?>
+                                Due Tomorrow
+                            <?php else: ?>
+                                Due <?= date('M j', strtotime($a['due_date'])) ?> (<?= $days_left ?> days)
+                            <?php endif; ?>
+                        </span>
+                    </div>
+
+                    <!-- Notes preview -->
+                    <?php if ($a['notes']): ?>
+                        <p class="assign-card-notes">
+                            <?= htmlspecialchars(mb_substr($a['notes'], 0, 100)) ?><?= strlen($a['notes']) > 100 ? '…' : '' ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Actions -->
+                <div class="assign-card-actions">
+                    <a href="assignments.php?edit=<?= $a['id'] ?>" class="icon-btn btn-edit" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="assignments.php?delete=<?= $a['id'] ?>" class="icon-btn btn-delete" title="Delete"
+                        onclick="return confirm('Delete this assignment?')">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+<?php endif; ?>
+
 <?php require_once '../includes/footer.php'; ?>
