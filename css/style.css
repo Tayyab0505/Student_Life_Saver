@@ -1223,3 +1223,216 @@ h6 {
 .filter-btn.active .filter-count {
     background: rgba(255, 255, 255, 0.25);
 }
+
+/* ASSIGNMENT CARDS */
+.assign-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.assign-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 3px solid var(--border);
+}
+
+.assign-card:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* State variants */
+.assign-card.is-done {
+    opacity: 0.65;
+    border-left-color: var(--accent2);
+}
+
+.assign-card.is-overdue {
+    border-left-color: var(--danger);
+    background: #fff5f5;
+}
+
+/* Check / uncheck toggle button */
+.assign-check {
+    font-size: 1.3rem;
+    color: var(--border);
+    text-decoration: none;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.assign-check:hover {
+    color: var(--accent2);
+    transform: scale(1.1);
+}
+
+.assign-check.checked {
+    color: var(--accent2);
+}
+
+/* Card body */
+.assign-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.assign-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.assign-card-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.assign-card-title.line-through {
+    text-decoration: line-through;
+    color: var(--muted);
+}
+
+.assign-card-badges {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+/* Badges */
+.badge-custom {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+/* Priority */
+.badge-low {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+.badge-medium {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+.badge-high {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+/* Status */
+.badge-status-pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #92400e;
+}
+
+.badge-status-in-progress {
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--primary);
+}
+
+.badge-status-completed {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+/* Meta row (subject, due date) */
+.assign-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+
+.assign-card-meta i {
+    margin-right: 0.25rem;
+}
+
+.due-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.due-tag.urgent {
+    color: var(--warning);
+    font-weight: 600;
+}
+
+.due-tag.overdue {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* Notes preview */
+.assign-card-notes {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0.3rem 0 0;
+    line-height: 1.5;
+    background: var(--bg);
+    padding: 0.4rem 0.65rem;
+    border-radius: 4px;
+    border-left: 2px solid var(--border);
+}
+
+/* Action icon buttons */
+.assign-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background: rgba(245, 158, 11, 0.1);
+    color: #b45309;
+}
+
+.btn-edit:hover {
+    background: var(--warning);
+    color: #fff;
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.btn-delete:hover {
+    background: var(--danger);
+    color: #fff;
+}
