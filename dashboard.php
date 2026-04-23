@@ -46,6 +46,11 @@ $stmt = $pdo->prepare("
 $stmt->execute([$current_user_id]);
 $upcoming = $stmt->fetchAll();
 
+// Recent expenses (last 4)
+$stmt = $pdo->prepare("SELECT * FROM expenses WHERE user_id = ? ORDER BY expense_date DESC, created_at DESC LIMIT 4");
+$stmt->execute([$current_user_id]);
+$recent_expenses = $stmt->fetchAll();
+
 require_once 'includes/header.php';
 ?>
 
