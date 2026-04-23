@@ -30,6 +30,11 @@ $stmt = $pdo->prepare("SELECT COALESCE(AVG(hours_slept),0) FROM sleep_log WHERE 
 $stmt->execute([$current_user_id]);
 $avg_sleep = round($stmt->fetchColumn(), 1);
 
+// Today's schedule
+$stmt = $pdo->prepare("SELECT * FROM schedule WHERE user_id = ? AND day_of_week = ? ORDER BY start_time ASC");
+$stmt->execute([$current_user_id, $today]);
+$todays_classes = $stmt->fetchAll();
+
 require_once 'includes/header.php';
 ?>
 

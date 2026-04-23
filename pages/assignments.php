@@ -349,7 +349,7 @@ require_once '../includes/header.php';
                     <!-- Notes preview -->
                     <?php if ($a['notes']): ?>
                         <p class="assign-card-notes">
-                            <?= htmlspecialchars(mb_substr($a['notes'], 0, 100)) ?><?= strlen($a['notes']) > 100 ? '…' : '' ?>
+                            <?= htmlspecialchars(mb_substr($a['notes'], 0, 100)) ?>            <?= strlen($a['notes']) > 100 ? '…' : '' ?>
                         </p>
                     <?php endif; ?>
                 </div>
