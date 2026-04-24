@@ -61,3 +61,81 @@ require_once '../includes/header.php';
         </button>
     </div>
 </div>
+
+<!-- ADD/EDIT FORM -->
+<div class="form-panel <?= ($edit_item || !empty($errors)) ? 'open' : '' ?>" id="expenseForm">
+    <div class="form-panel-inner">
+        <h6 class="form-panel-title">
+            <i class="bi bi-<?= isset($edit_item['id']) && $edit_item['id'] ? 'pencil' : 'plus-circle' ?> me-2"></i>
+            <?= isset($edit_item['id']) && $edit_item['id'] ? 'Edit Expense' : 'Add New Expense' ?>
+        </h6>
+
+        <?php if (!empty($errors)): ?>
+            <div>
+                <?php foreach ($errors as $e): ?>
+                    <div> <i class="bi bi-exclamation-circle me-1"></i><?= htmlspecialchars($e) ?> </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="post" action="expenses.php">
+            <input type="hidden" name="form_type" value="expense" />
+            <input type="hidden" name="edit_id" value="<?= $edit_item['id'] ?? 0 ?>" />
+
+            <div class="row g-3">
+                <!-- Title -->
+                <div class="col-sm-6">
+                    <label class="field-label">Description *</label>
+                    <input type="text" name="title" class="field-input" placeholder="e.g. Lunch at cafeteria"
+                        value="<?= htmlspecialchars($edit_item['title'] ?? '') ?>" required />
+                </div>
+
+                <!-- Amount -->
+                <div class="col-sm-3">
+                    <label class="field-label">Amount ($) *</label>
+                    <input type="number" name="amount" class="field-input" placeholder="0.00" step="0.01" min="0.01"
+                        value="<?= htmlspecialchars($edit_item['amount'] ?? '') ?>" required />
+                </div>
+
+                <!-- Date -->
+                <div class="col-sm-3">
+                    <label class="field-label">Date *</label>
+                    <input type="date" name="expense_date" class="field-input"
+                        value="<?= htmlspecialchars($edit_item['expense_date'] ?? date('Y-m-d')) ?>" required />
+                </div>
+
+                <!-- Category -->
+                <div class="col-12">
+                    <label class="field-label">Category</label>
+                    <div class="category-picker">
+                        <?php foreach ($categories as $cat => $cfg): ?>
+                            <label class="cat-option">
+                                <input type="radio" name="category" value="<?= $cat ?>" <?= ($edit_item['category'] ?? 'Food') === $cat ? 'checked' : '' ?> />
+                                <span class="cat-pill" style="--cat-color:<?= $cfg['color'] ?>;--cat-bg:<?= $cfg['bg'] ?>">
+                                    <i class="bi <?= $cfg['icon'] ?>"></i> <?= $cat ?>
+                                </span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="col-12">
+                    <label class="field-label">Notes <span class="text-muted fw-normal"
+                            style="text-transform:none">(optional)</span></label>
+                    <input type="text" name="notes" class="field-input" placeholder="Any extra details…"
+                        value="<?= htmlspecialchars($edit_item['notes'] ?? '') ?>" />
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn-submit-sm">
+                        <i
+                            class="bi bi-<?= isset($edit_item['id']) && $edit_item['id'] ? 'check-lg' : 'plus-lg' ?> me-1"></i>
+                        <?= isset($edit_item['id']) && $edit_item['id'] ? 'Save Changes' : 'Add Expense' ?>
+                    </button>
+                    <a href="expenses.php?month=<?= $selected_month ?>" class="btn-cancel-sm">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
