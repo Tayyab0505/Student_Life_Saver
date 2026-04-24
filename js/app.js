@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    // 1. SIDEBAR TOGGLE
+    // SIDEBAR TOGGLE
     $('#sidebarToggle').on('click', function () {
         $('#sidebar').addClass('open');
         $('#sidebarOverlay').addClass('show');
@@ -16,7 +16,7 @@ $(document).ready(function () {
         });
     }, 2000);
 
-    // 2. CONFIRM BEFORE DELETE
+    // CONFIRM BEFORE DELETE
     // Any link with data-confirm="message" shows a confirm dialog
     $(document).on('click', '[data-confirm]', function (e) {
         if (!confirm($(this).data('confirm') || 'Are you sure?')) {
@@ -24,7 +24,7 @@ $(document).ready(function () {
         }
     });
 
-    // 3. SCHEDULE FORM TOGGLE
+    // SCHEDULE FORM TOGGLE
     if ($('#toggleFormBtn').length) {
         $('#toggleFormBtn').on('click', function () {
             const panel = $('#scheduleForm');
@@ -44,7 +44,7 @@ $(document).ready(function () {
         }
     }
 
-    // 4. ASSIGNMENTS FORM TOGGLE
+    // ASSIGNMENTS FORM TOGGLE
     if ($('#toggleAssignBtn').length) {
         $('#toggleAssignBtn').on('click', function () {
             const panel = $('#assignForm');

@@ -329,8 +329,7 @@ require_once '../includes/header.php';
                             <?= $row['category'] ?>
                         </span>
                         <span class="cat-bar-amount">$
-                            <?= number_format($row['total'], 2) ?> <small>(
-                                <?= $pct ?>%)
+                            <?= number_format($row['total'], 2) ?> <small>(<?= $pct ?>%)
                             </small>
                         </span>
                     </div>
@@ -342,3 +341,87 @@ require_once '../includes/header.php';
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
+
+<!-- EXPENSES LIST -->
+<?php if (empty($expenses)): ?>
+    <div class="empty-state-page">
+        <i class="bi bi-wallet2"></i>
+        <h5>No expenses for
+            <?= $month_options[$selected_month] ?? $selected_month ?>
+        </h5>
+        <p>Click "Add Expense" to start logging your spending.</p>
+    </div>
+<?php else: ?>
+
+    <!-- Group by date -->
+    <?php
+    $grouped = [];
+    foreach ($expenses as $exp) {
+        $grouped[$exp['expense_date']][] = $exp;
+    }
+    ?>
+
+    <?php foreach ($grouped as $date => $day_expenses):
+        $day_total = array_sum(array_column($day_expenses, 'amount'));
+        ?>
+        <!-- Date group header -->
+        <div class="exp-date-header">
+            <span class="exp-date-label">
+                <?php
+                $ts = strtotime($date);
+                if ($date === date('Y-m-d'))
+                    echo 'Today';
+                elseif ($date === date('Y-m-d', strtotime('-1 day')))
+                    echo 'Yesterday';
+                else
+                    echo date('l, M j', $ts);
+                ?>
+            </span>
+            <span class="exp-date-total">$
+                <?= number_format($day_total, 2) ?>
+            </span>
+        </div>
+
+        <!-- Expense rows for this date -->
+        <?php foreach ($day_expenses as $exp):
+            $cfg = $categories[$exp['category']] ?? $categories['Other'];
+            ?>
+            <div class="expense-row">
+                <div class="exp-row-icon" style="background:<?= $cfg['bg'] ?>;color:<?= $cfg['color'] ?>">
+                    <i class="bi <?= $cfg['icon'] ?>"></i>
+                </div>
+                <div class="exp-row-info">
+                    <div class="exp-row-title">
+                        <?= htmlspecialchars($exp['title']) ?>
+                    </div>
+                    <div class="exp-row-meta">
+                        <span class="exp-cat-tag" style="background:<?= $cfg['bg'] ?>;color:<?= $cfg['color'] ?>">
+                            <?= $exp['category'] ?>
+                        </span>
+                        <?php if ($exp['notes']): ?>
+                            <span class="exp-row-note">
+                                <?= htmlspecialchars($exp['notes']) ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="exp-row-amount">$
+                    <?= number_format($exp['amount'], 2) ?>
+                </div>
+                <div class="exp-row-actions">
+                    <a href="expenses.php?edit=<?= $exp['id'] ?>&month=<?= $selected_month ?>" class="icon-btn btn-edit"
+                        title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="expenses.php?delete=<?= $exp['id'] ?>&month=<?= $selected_month ?>" class="icon-btn btn-delete"
+                        title="Delete" onclick="return confirm('Delete this expense?')">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<?php require_once '../includes/footer.php'; ?>
