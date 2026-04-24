@@ -93,6 +93,30 @@ for ($i = 0; $i < 6; $i++) {
     $month_options[$m] = date('F Y', strtotime("$m-01"));
 }
 
+// Fetch expenses slected month
+$stmt = $pdo->prepare("SELECT * FROM expenses WHERE user_id = ? AND DATE_FORMAT(expense_date,'%Y-%m') = ? ORDER BY expense_date DESC, created_at DESC");
+$stmt->execute([$current_user_id, $selected_month]);
+$expenses = $stmt->fetchAll();
+
+// Monthly total
+$stmt = $pdo->prepare("SELECT COALESCE(SUM(amount),0) FROM expenses WHERE user_id=? AND DATE_FORMAT(expense_date,'%Y-%m')=?");
+$stmt->execute([$current_user_id, $selected_month]);
+$month_total = (float) $stmt->fetchColumn();
+
+// Spending by category
+$stmt = $pdo->prepare("SELECT category, SUM(amount) as total, COUNT(*) as count FROM expenses WHERE user_id=? AND DATE_FORMAT(expense_date,'%Y-%m')=? GROUP BY category ORDER BY total DESC");
+$stmt->execute([$current_user_id, $selected_month]);
+$by_category = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Budget goal for selected month
+$stmt = $pdo->prepare("SELECT monthly_limit FROM budget_goals WHERE user_id = ? AND month_year = ?");
+$stmt->execute([$current_user_id, $selected_month]);
+$budget_row = $stmt->fetch();
+$budget_limit = $budget_row ? (float) $budget_row['monthly_limit'] : 0;
+$budget_pct = $budget_limit > 0 ? min(100, round(($month_total / $budget_limit) * 100)) : 0;
+$budget_color = $budget_pct >= 100 ? 'danger' : ($budget_pct >= 75 ? 'warning' : 'success');
+
+
 require_once '../includes/header.php';
 ?>
 
