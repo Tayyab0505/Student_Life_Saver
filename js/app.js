@@ -34,9 +34,7 @@ $(document).ready(function () {
 
             // Swap button label and icon
             $(this).html(
-                isOpen
-                    ? '<i class="bi bi-plus-lg"></i> Add Class'
-                    : '<i class="bi bi-x-lg"></i> Close Form'
+                isOpen ? '<i class="bi bi-plus-lg"></i> Add Class' : '<i class="bi bi-x-lg"></i> Close Form'
             );
         });
         if ($('#scheduleForm').hasClass('open')) {
@@ -51,14 +49,28 @@ $(document).ready(function () {
             const isOpen = panel.hasClass('open');
             panel.toggleClass('open');
             $(this).html(
-                isOpen
-                    ? '<i class="bi bi-plus-lg"></i> Add Assignment'
-                    : '<i class="bi bi-x-lg"></i> Close Form'
+                isOpen ? '<i class="bi bi-plus-lg"></i> Add Assignment' : '<i class="bi bi-x-lg"></i> Close Form'
             );
         });
 
         if ($('#assignForm').hasClass('open')) {
             $('#toggleAssignBtn').html('<i class="bi bi-x-lg"></i> Close Form');
+        }
+    }
+
+    // Expense FORM TOGGLE
+    if ($('#toggleExpenseBtn').length) {
+        $('#toggleExpenseBtn').on('click', function () {
+            const panel = $('#expenseForm');
+            const isOpen = panel.hasClass('open');
+            panel.toggleClass('open');
+            $(this).html(
+                isOpen ? '<i class="bi bi-plus-lg"></i> Add Expense' : '<i class="bi bi-x-lg"></i> Close Form'
+            )
+        });
+
+        if ($('#expenseForm').hasClass('open')) {
+            $('#toggleExpenseBtn').html('<i class="bi bi-x-lg"></i> Close Form');
         }
     }
 
