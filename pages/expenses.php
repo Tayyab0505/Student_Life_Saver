@@ -25,6 +25,14 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
+// Load expense for editing
+if (isset($_GET['edit'])) {
+    $edit_id = (int) $_GET['edit'];
+    $stmt = $pdo->prepare('SELECT * FROM expenses WHERE id = ? AND user_id = ?');
+    $stmt->execute([$edit_id, $current_user_id]);
+    $edit_item = $stmt->fetch();
+}
+
 require_once '../includes/header.php';
 ?>
 
