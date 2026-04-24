@@ -99,7 +99,7 @@ if ($filter_status !== 'all') {
     $params[] = $filter_status;
 }
 if ($filter_priority !== 'all') {
-    $where .= " AND status = ?";
+    $where .= " AND priority = ?";
     $params[] = $filter_priority;
 }
 
@@ -259,7 +259,9 @@ require_once '../includes/header.php';
         ];
         foreach ($statuses as $val => [$label, $count, $color]):
             $active = $filter_status === $val ? 'active' : '';
-            $url = http_build_query(array_merge($_GET, ['filter_status' => $val]));
+            $params = $_GET;
+            unset($params['msg']);
+            $url = http_build_query(array_merge($params, ['filter_status' => $val]));
             ?>
             <a href="assignments.php?<?= $url ?>" class="filter-btn <?= $active ?> <?= $color ? "filter-$color" : '' ?>">
                 <?= $label ?>
@@ -273,7 +275,9 @@ require_once '../includes/header.php';
         <span class="filter-label">Priority:</span>
         <?php foreach (['all' => 'All', 'High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low'] as $val => $label):
             $active = $filter_priority === $val ? 'active' : '';
-            $url = http_build_query(array_merge($_GET, ['filter_priority' => $val]));
+            $params = $_GET;
+            unset($params['msg']);
+            $url = http_build_query(array_merge($params, ['filter_priority' => $val]));
             ?>
             <a href="assignments.php?<?= $url ?>" class="filter-btn filter-sm <?= $active ?>">
                 <?= $label ?>
@@ -349,7 +353,7 @@ require_once '../includes/header.php';
                     <!-- Notes preview -->
                     <?php if ($a['notes']): ?>
                         <p class="assign-card-notes">
-                            <?= htmlspecialchars(mb_substr($a['notes'], 0, 100)) ?>            <?= strlen($a['notes']) > 100 ? '…' : '' ?>
+                            <?= htmlspecialchars(mb_substr($a['notes'], 0, 100)) ?>             <?= strlen($a['notes']) > 100 ? '…' : '' ?>
                         </p>
                     <?php endif; ?>
                 </div>

@@ -36,13 +36,11 @@ $stmt->execute([$current_user_id, $today]);
 $todays_classes = $stmt->fetchAll();
 
 // Upcoming assignments (next 7 days)
-$stmt = $pdo->prepare("
-    SELECT * FROM assignments
+$stmt = $pdo->prepare("SELECT * FROM assignments
     WHERE user_id = ?
       AND status != 'Completed'
       AND due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-    ORDER BY due_date ASC LIMIT 5
-");
+    ORDER BY due_date ASC LIMIT 5");
 $stmt->execute([$current_user_id]);
 $upcoming = $stmt->fetchAll();
 
@@ -73,8 +71,8 @@ require_once 'includes/header.php';
 <!-- STAT CARDS -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="stat-icon icon-purple"><i class="bi bi-journal-check"></i></div>
+        <div class="stat-card card-purple">
+            <div class="stat-icon"><i class="bi bi-journal-check"></i></div>
             <div class="stat-value">
                 <?= $pending_assignments ?>
             </div>
@@ -83,8 +81,8 @@ require_once 'includes/header.php';
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="stat-icon icon-cyan"><i class="bi bi-calendar-week"></i></div>
+        <div class="stat-card card-cyan">
+            <div class="stat-icon"><i class="bi bi-calendar-week"></i></div>
             <div class="stat-value">
                 <?= $classes_today ?>
             </div>
@@ -93,8 +91,8 @@ require_once 'includes/header.php';
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="stat-icon icon-amber"><i class="bi bi-wallet2"></i></div>
+        <div class="stat-card card-amber">
+            <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
             <div class="stat-value">$
                 <?= number_format($monthly_spending, 0) ?>
             </div>
@@ -103,8 +101,8 @@ require_once 'includes/header.php';
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="stat-icon icon-green"><i class="bi bi-moon-stars"></i></div>
+        <div class="stat-card card-green">
+            <div class="stat-icon"><i class="bi bi-moon-stars"></i></div>
             <div class="stat-value">
                 <?= $avg_sleep ?>h
             </div>
