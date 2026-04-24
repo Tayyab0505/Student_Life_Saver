@@ -312,3 +312,33 @@ require_once '../includes/header.php';
     </div>
 
 </div>
+
+<!--CATEGORY BREAKDOWN -->
+<?php if (!empty($by_category)): ?>
+    <div class="cat-breakdown mb-4">
+        <?php foreach ($by_category as $row):
+            $cfg = $categories[$row['category']] ?? $categories['Other'];
+            $pct = $month_total > 0 ? round(($row['total'] / $month_total) * 100) : 0; ?>
+            <div class="cat-bar-item">
+                <div class="cat-bar-icon" style="background:<?= $cfg['bg'] ?>;color:<?= $cfg['color'] ?>">
+                    <i class="bi <?= $cfg['icon'] ?>"></i>
+                </div>
+                <div class="cat-bar-info">
+                    <div class="d-flex justify-content-between">
+                        <span class="cat-bar-name">
+                            <?= $row['category'] ?>
+                        </span>
+                        <span class="cat-bar-amount">$
+                            <?= number_format($row['total'], 2) ?> <small>(
+                                <?= $pct ?>%)
+                            </small>
+                        </span>
+                    </div>
+                    <div class="cat-bar-track">
+                        <div class="cat-bar-fill" style="width:<?= $pct ?>%;background:<?= $cfg['color'] ?>"></div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
