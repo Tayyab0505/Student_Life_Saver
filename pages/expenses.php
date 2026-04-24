@@ -16,6 +16,15 @@ $categories = [
     'Other' => ['icon' => 'bi-bag', 'color' => '#64748b', 'bg' => '#f1f5f9'],
 ];
 
+// Handle Delete
+if (isset($_GET['delete'])) {
+    $del_id = (int) $_GET['delete'];
+    $stmt = $pdo->prepare('DELETE FROM expenses where id = ? AND user_id = ?');
+    $stmt->execute([$del_id, $current_user_id]);
+    header('Location: expenses.php?msg=deleted');
+    exit;
+}
+
 require_once '../includes/header.php';
 ?>
 
