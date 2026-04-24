@@ -1198,7 +1198,7 @@ h6 {
 
 
 
-/* STEP 3 — Assignments Tracker styles */
+/* Assignments Tracker styles */
 
 /* color (green for completed) */
 :root {
@@ -1500,4 +1500,277 @@ h6 {
 .btn-delete:hover {
     background: var(--danger);
     color: #fff;
+}
+
+/* Expense Tracker styles */
+
+/* Summary cards */
+.exp-summary-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+}
+
+.exp-sum-label {
+    font-size: 0.73rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+
+.exp-sum-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-family: 'Sora', sans-serif;
+    line-height: 1.1;
+}
+
+.exp-sum-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+}
+
+/* Budget progress bar */
+.budget-bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.budget-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.6s ease;
+}
+
+/* Bootstrap color overrides for bg- */
+.bg-success {
+    background-color: #10b981 !important;
+}
+
+.bg-warning {
+    background-color: #f59e0b !important;
+}
+
+.bg-danger {
+    background-color: #ef4444 !important;
+}
+
+.text-success {
+    color: #10b981 !important;
+}
+
+.text-warning {
+    color: #d97706 !important;
+}
+
+.text-danger {
+    color: #dc2626 !important;
+}
+
+/*Category picker*/
+.category-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.cat-option input {
+    display: none;
+}
+
+.cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    background: var(--bg);
+    color: var(--muted);
+    transition: all 0.2s;
+}
+
+.cat-pill:hover {
+    background: var(--cat-bg, #f1f5f9);
+    color: var(--cat-color, #64748b);
+    border-color: var(--cat-color, #64748b);
+}
+
+/*Category breakdown bars */
+.cat-breakdown {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.cat-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.cat-bar-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.cat-bar-info {
+    flex: 1;
+}
+
+.cat-bar-name {
+    font-size: 0.83rem;
+    font-weight: 500;
+}
+
+.cat-bar-amount {
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.cat-bar-amount small {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.cat-bar-track {
+    height: 5px;
+    background: var(--border);
+    border-radius: 50px;
+    margin-top: 0.3rem;
+    overflow: hidden;
+}
+
+.cat-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.5s ease;
+}
+
+/*Expense date group header */
+.exp-date-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.25rem;
+    margin-bottom: 0.4rem;
+    margin-top: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.exp-date-header:first-of-type {
+    margin-top: 0;
+}
+
+.exp-date-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.exp-date-total {
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Expense row  */
+.expense-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.45rem;
+    transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.expense-row:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow);
+}
+
+.exp-row-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.exp-row-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.exp-row-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.exp-row-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.18rem;
+    flex-wrap: wrap;
+}
+
+.exp-cat-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 50px;
+}
+
+.exp-row-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.exp-row-amount {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--danger);
+    white-space: nowrap;
+}
+
+.exp-row-actions {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
 }
