@@ -43,14 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POS
     $post_id = (int) ($_POST['edit_id'] ?? 0);
 
     // Validation
-    if ($title === '')
+    if ($title === '') {
         $errors[] = 'Title is required.';
-    if (!is_numeric($amount) || $amount <= 0)
+    }
+    if (!is_numeric($amount) || $amount <= 0) {
         $errors[] = 'Enter a valid amount greater than 0.';
-    if ($expense_date === '')
+    }
+    if ($expense_date === '') {
         $errors[] = 'Date is required.';
-    if (!array_key_exists($category, $categories))
+    }
+    if (!array_key_exists($category, $categories)) {
         $errors[] = 'Invalid category.';
+    }
 
     if (empty($errors)) {
         if ($post_id > 0) {
@@ -65,6 +69,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POS
         exit;
     }
     $edit_item = compact('title', 'amount', 'category', 'expense_date', 'notes') + ['id' => $post_id];
+}
+
+// Handle Set Budget
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POST['form_type'] === 'budget') {
+    $limit = $_POST['monthly_limit'] ?? '';
+    $monthly_val = $_POST['month_year'] ?? date('Y-m');
+    if (is_numeric($limit) && $limit > 0) {
+        $stmt = $pdo->prepare("INSERT INTO budget_goals (user_id, month_year, monthly_limit) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE monthly_limit = VALUES(monthly_limit)");
+        $stmt->execute([$current_user_id, $month_val, $limit]);
+        header('Location: expenses.php?msg=budget_set');
+        exit;
+    }
+}
+
+// Month Filter
+$selected_month = $_GET['month'] ?? date('Y-m');
+
+// Build list of last six month for dropdown
+$month_options = [];
+for ($i = 0; $i < 6; $i++) {
+    $m = date('Y-m', strtotime("-$i months"));
+    $month_options[$m] = date('F Y', strtotime("$m-01"));
 }
 
 require_once '../includes/header.php';
