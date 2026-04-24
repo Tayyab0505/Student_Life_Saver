@@ -33,6 +33,8 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
+
+
 require_once '../includes/header.php';
 ?>
 
@@ -155,4 +157,76 @@ require_once '../includes/header.php';
             </div>
         </form>
     </div>
+</div>
+
+<!-- SUMMARY ROW -->
+<div class="row g-3 mb-4">
+
+    <!-- Monthly total card -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="exp-summary-card" style="border-top:3px solid #4f46e5">
+            <div class="exp-sum-label">Total Spent</div>
+            <div class="exp-sum-value">$
+                <?= number_format($month_total, 2) ?>
+            </div>
+            <div class="exp-sum-sub">
+                <?= $month_options[$selected_month] ?? $selected_month ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget card -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="exp-summary-card" style="border-top:3px solid #10b981">
+            <div class="exp-sum-label">Monthly Budget</div>
+            <div class="exp-sum-value">
+                <?= $budget_limit > 0 ? '$' . number_format($budget_limit, 0) : '—' ?>
+            </div>
+            <div class="exp-sum-sub">
+                <?= $budget_limit > 0
+                    ? '$' . number_format(max(0, $budget_limit - $month_total), 2) . ' remaining'
+                    : 'No budget set' ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget progress -->
+    <div class="col-lg-6">
+        <div class="exp-summary-card" style="border-top:3px solid #f59e0b">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="exp-sum-label">Budget Usage</div>
+                <span class="badge bg-<?= $budget_color ?> bg-opacity-10 text-<?= $budget_color ?>"
+                    style="font-size:0.75rem">
+                    <?= $budget_pct ?>%
+                </span>
+            </div>
+            <?php if ($budget_limit > 0): ?>
+                <div class="budget-bar-track">
+                    <div class="budget-bar-fill bg-<?= $budget_color ?>" style="width:<?= $budget_pct ?>%"></div>
+                </div>
+                <div class="exp-sum-sub mt-2">
+                    <?php if ($budget_pct >= 100): ?>
+                        <span style="color:var(--danger)"><i class="bi bi-exclamation-triangle-fill"></i> Over budget by $
+                            <?= number_format($month_total - $budget_limit, 2) ?>
+                        </span>
+                    <?php elseif ($budget_pct >= 75): ?>
+                        <span style="color:var(--warning)"><i class="bi bi-exclamation-circle"></i> Approaching budget
+                            limit</span>
+                    <?php else: ?>
+                        <span style="color:var(--accent)"><i class="bi bi-check-circle"></i> On track</span>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <!-- Set budget form inline -->
+                <form method="POST" action="expenses.php" class="d-flex gap-2 mt-1">
+                    <input type="hidden" name="form_type" value="budget" />
+                    <input type="hidden" name="month_year" value="<?= $selected_month ?>" />
+                    <input type="number" name="monthly_limit" class="field-input" placeholder="Set budget…" step="1" min="1"
+                        style="flex:1;padding:0.4rem 0.7rem" />
+                    <button type="submit" class="btn-submit-sm" style="white-space:nowrap">Set Goal</button>
+                </form>
+            <?php endif; ?>
+        </div>
+    </div>
+
 </div>
