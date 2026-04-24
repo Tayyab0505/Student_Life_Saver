@@ -33,7 +33,39 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
+// Handle ADD / EDIT
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POST['form_type'] === 'expense') {
+    $title = trim($_POST['title'] ?? '');
+    $amount = $_POST['amount'] ?? '';
+    $category = $_POST['category'] ?? 'Other';
+    $expense_date = $_POST['expense_date'] ?? '';
+    $notes = trim($_POST['notes'] ?? '');
+    $post_id = (int) ($_POST['edit_id'] ?? 0);
 
+    // Validation
+    if ($title === '')
+        $errors[] = 'Title is required.';
+    if (!is_numeric($amount) || $amount <= 0)
+        $errors[] = 'Enter a valid amount greater than 0.';
+    if ($expense_date === '')
+        $errors[] = 'Date is required.';
+    if (!array_key_exists($category, $categories))
+        $errors[] = 'Invalid category.';
+
+    if (empty($errors)) {
+        if ($post_id > 0) {
+            $stmt = $pdo->prepare("UPDATE expenses SET title=?,amount=?,category=?,expense_date=?,notes=? WHERE id=? AND user_id=?");
+            $stmt->execute([$title, $amount, $category, $expense_date, $notes, $post_id, $current_user_id]);
+            header('Location: expenses.php?msg=updated');
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO expenses (user_id,title,amount,category,expense_date,notes) VALUES (?,?,?,?,?,?)");
+            $stmt->execute([$current_user_id, $title, $amount, $category, $expense_date, $notes]);
+            header('Location: expenses.php?msg=added');
+        }
+        exit;
+    }
+    $edit_item = compact('title', 'amount', 'category', 'expense_date', 'notes') + ['id' => $post_id];
+}
 
 require_once '../includes/header.php';
 ?>
