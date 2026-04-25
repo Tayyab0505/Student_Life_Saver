@@ -97,6 +97,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $edit_item = compact('log_date','sleep_time','wake_time','mood','notes') + ['id' => $post_id];
 }
 
+// Last 7 days data for chart
+$stmt = $pdo->prepare("SELECT log_date, hours_slept, mood FROM sleep_log WHERE user_id = ? AND log_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) ORDER BY log_date ASC");
+$stmt->execute([$current_user_id]);
+$week_data = $stmt->fetchAll();
+
+// Build chart-ready arrays
+$chart_labels = [];
+$chart_hours  = [];
+$chart_moods  = [];
+for ($i = 6; $i >= 0; $i--) {
+    $d = date('Y-m-d', strtotime("-$i days"));
+    $chart_labels[] = date('D', strtotime($d));
+    // Find this date in week_data
+    $found = null;
+    foreach ($week_data as $row) {
+        if ($row['log_date'] === $d) { $found = $row; break; }
+    }
+    $chart_hours[] = $found ? (float)$found['hours_slept'] : null;
+    $chart_moods[] = $found ? $found['mood'] : null;
+}
+
+// Stats 
+$stmt = $pdo->prepare("SELECT AVG(hours_slept) FROM sleep_log WHERE user_id=? AND log_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+$stmt->execute([$current_user_id]);
+$avg_sleep_7 = round((float)$stmt->fetchColumn(), 1);
+ 
+$stmt = $pdo->prepare("SELECT AVG(hours_slept) FROM sleep_log WHERE user_id=?");
+$stmt->execute([$current_user_id]);
+$avg_sleep_all = round((float)$stmt->fetchColumn(), 1);
+ 
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM sleep_log WHERE user_id=?");
+$stmt->execute([$current_user_id]);
+$total_logs = (int)$stmt->fetchColumn();
+ 
+// Most common mood
+$stmt = $pdo->prepare("SELECT mood, COUNT(*) as c FROM sleep_log WHERE user_id=? GROUP BY mood ORDER BY c DESC LIMIT 1");
+$stmt->execute([$current_user_id]);
+$top_mood_row = $stmt->fetch();
+$top_mood = $top_mood_row ? $top_mood_row['mood'] : null;
+
+// Full log history
+$stmt = $pdo->prepare("SELECT * FROM sleep_log WHERE user_id=? ORDER BY log_date DESC LIMIT 30");
+$stmt->execute([$current_user_id]);
+$logs = $stmt->fetchAll();
+
 require_once '../includes/header.php';
 ?>
 
