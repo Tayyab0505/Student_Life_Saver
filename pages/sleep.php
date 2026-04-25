@@ -6,7 +6,7 @@ $active_page = 'sleep';
 $errors = [];
 $edit_item = null;
 
-// Mood config
+//  Mood config
 $moods = [
   'Great' => ['emoji' => '😄', 'color' => '#10b981', 'bg' => '#d1fae5'],
   'Good' => ['emoji' => '🙂', 'color' => '#06b6d4', 'bg' => '#cffafe'],
@@ -15,7 +15,7 @@ $moods = [
   'Exhausted' => ['emoji' => '😫', 'color' => '#ef4444', 'bg' => '#fee2e2'],
 ];
 
-// Handle DELETE
+//  Handle DELETE
 if (isset($_GET['delete'])) {
   $del_id = (int) $_GET['delete'];
   $stmt = $pdo->prepare("DELETE FROM sleep_log WHERE id = ? AND user_id = ?");
@@ -24,7 +24,7 @@ if (isset($_GET['delete'])) {
   exit;
 }
 
-// Load log for editing
+//  Load log for editing 
 if (isset($_GET['edit'])) {
   $edit_id = (int) $_GET['edit'];
   $stmt = $pdo->prepare("SELECT * FROM sleep_log WHERE id = ? AND user_id = ?");
@@ -32,7 +32,7 @@ if (isset($_GET['edit'])) {
   $edit_item = $stmt->fetch();
 }
 
-// Handle ADD / UPDATE 
+//  Handle ADD / UPDATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $log_date = $_POST['log_date'] ?? '';
   $sleep_time = $_POST['sleep_time'] ?? '';
@@ -55,53 +55,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors[] = 'Invalid mood selected.';
   }
 
-  // Calculate hours slept 
+  //  Calculate hours slept
   $hours_slept = null;
-  if ($hours_slept === null) {
-    $errors[] = 'Could not calculate sleep hours.';
-  }
-
   if ($sleep_time && $wake_time) {
-    [$sh, $sm] = explode(':', $sleep_time);
-    [$wh, $wm] = explode(':', $wake_time);
-    $sleep_mins = (int) $sh * 60 + (int) $sm;
-    $wake_mins = (int) $wh * 60 + (int) $wm;
 
-    // If wake time is earlier than sleep time → slept past midnight
-    if ($wake_mins <= $sleep_mins) {
+    // Split on ':' — take only hours & minutes, ignore seconds
+    $sleep_parts = explode(':', $sleep_time);
+    $wake_parts = explode(':', $wake_time);
+
+    $sh = (int) ($sleep_parts[0] ?? 0);
+    $sm = (int) ($sleep_parts[1] ?? 0);
+    $wh = (int) ($wake_parts[0] ?? 0);
+    $wm = (int) ($wake_parts[1] ?? 0);
+
+    $sleep_mins = $sh * 60 + $sm;
+    $wake_mins = $wh * 60 + $wm;
+
+    if ($wake_mins < $sleep_mins) {
       $wake_mins += 24 * 60;
     }
 
-    $hours_slept = round(($wake_mins - $sleep_mins) / 60, 2);
-
-    if ($hours_slept > 10) {
-      $errors[] = 'Calculated hours seems too long. Check your times.';
-    }
-    if ($hours_slept <= 0) {
-      $errors[] = 'Wake time must be after sleep time.';
+    if ($wake_mins === $sleep_mins) {
+      $errors[] = 'Sleep time and wake time cannot be the same.';
+    } else {
+      $hours_slept = round(($wake_mins - $sleep_mins) / 60, 2);
+      if ($hours_slept > 20) {
+        $errors[] = 'Calculated ' . $hours_slept . 'h seems too long. Check your times.';
+        $hours_slept = null;
+      } elseif ($hours_slept <= 0) {
+        $errors[] = 'Could not calculate sleep hours. Please check your times.';
+        $hours_slept = null;
+      }
     }
   }
 
   if (empty($errors)) {
     if ($post_id > 0) {
       // UPDATE — replace existing log
-      $stmt = $pdo->prepare("UPDATE sleep_log SET log_date=?, sleep_time=?, wake_time=?, hours_slept=?, mood=?, notes=? WHERE id=? AND user_id=?");
+      $stmt = $pdo->prepare("UPDATE sleep_log SET log_date=?, sleep_time=?, wake_time=?, hours_slept=?, mood=?, notes=? WHERE id=? AND user_id=");
       $stmt->execute([$log_date, $sleep_time, $wake_time, $hours_slept, $mood, $notes, $post_id, $current_user_id]);
       header('Location: sleep.php?msg=updated');
     } else {
-      $stmt = $pdo->prepare("INSERT INTO sleep_log (user_id,log_date,sleep_time,wake_time,hours_slept,mood,notes) VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE sleep_time=VALUES(sleep_time), wake_time=VALUES(wake_time), hours_slept=VALUES(hours_slept), mood=VALUES(mood), notes=VALUES(notes)");
+      $stmt = $pdo->prepare("INSERT INTO sleep_log (user_id,log_date,sleep_time,wake_time,hours_slept,mood,notes) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE sleep_time=VALUES(sleep_time), wake_time=VALUES(wake_time), hours_slept=VALUES(hours_slept), mood=VALUES(mood notes=VALUES(notes)");
       $stmt->execute([$current_user_id, $log_date, $sleep_time, $wake_time, $hours_slept, $mood, $notes]);
       header('Location: sleep.php?msg=added');
     }
     exit;
   }
 
-  $edit_item = compact('log_date', 'sleep_time', 'wake_time', 'mood', 'notes');
-  $edit_item['id'] = $post_id;
+  $edit_item = compact('log_date', 'sleep_time', 'wake_time', 'mood', 'notes') + ['id' => $post_id];
 }
 
-// Last 7 days data for chart
-$stmt = $pdo->prepare("SELECT log_date, hours_slept, mood FROM sleep_log WHERE user_id = ? AND log_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) ORDER BY log_date ASC");
+//  Last 7 days data for chart 
+$stmt = $pdo->prepare("
+    SELECT log_date, hours_slept, mood
+    FROM sleep_log
+    WHERE user_id = ?
+      AND log_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+    ORDER BY log_date ASC
+");
 $stmt->execute([$current_user_id]);
 $week_data = $stmt->fetchAll();
 
@@ -124,7 +136,7 @@ for ($i = 6; $i >= 0; $i--) {
   $chart_moods[] = $found ? $found['mood'] : null;
 }
 
-// Stats 
+// Stats
 $stmt = $pdo->prepare("SELECT AVG(hours_slept) FROM sleep_log WHERE user_id=? AND log_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
 $stmt->execute([$current_user_id]);
 $avg_sleep_7 = round((float) $stmt->fetchColumn(), 1);
@@ -143,7 +155,7 @@ $stmt->execute([$current_user_id]);
 $top_mood_row = $stmt->fetch();
 $top_mood = $top_mood_row ? $top_mood_row['mood'] : null;
 
-// Full log history
+// Full log history 
 $stmt = $pdo->prepare("SELECT * FROM sleep_log WHERE user_id=? ORDER BY log_date DESC LIMIT 30");
 $stmt->execute([$current_user_id]);
 $logs = $stmt->fetchAll();
@@ -161,14 +173,13 @@ require_once '../includes/header.php';
   <?php if (isset($msgs[$_GET['msg']])):
     [$type, $text] = $msgs[$_GET['msg']]; ?>
     <div class="alert alert-<?= $type ?> alert-dismissible fade show custom-alert" role="alert">
-      <i class="bi bi-<?= $type === 'success' ? 'check-circle' : 'trash3' ?> me-2"></i>
-      <?= $text ?>
+      <i class="bi bi-<?= $type === 'success' ? 'check-circle' : 'trash3' ?> me-2"></i><?= $text ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
 <?php endif; ?>
 
-<!-- Page header -->
+<!--  Page header  -->
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
   <div>
     <h4 class="page-title mb-1">Sleep & Routine</h4>
@@ -179,7 +190,7 @@ require_once '../includes/header.php';
   </button>
 </div>
 
-<!-- ADD / EDIT FORM -->
+<!--  ADD / EDIT FORM  -->
 <div class="form-panel <?= ($edit_item || !empty($errors)) ? 'open' : '' ?>" id="sleepForm">
   <div class="form-panel-inner">
     <h6 class="form-panel-title">
@@ -212,7 +223,7 @@ require_once '../includes/header.php';
         <div class="col-sm-4">
           <label class="field-label">Went to Bed *</label>
           <input type="time" name="sleep_time" class="field-input" id="sleepTimeInput"
-            value="<?= htmlspecialchars($edit_item['sleep_time'] ?? '23:00') ?>" required />
+            value="<?= htmlspecialchars(substr($edit_item['sleep_time'] ?? '23:00', 0, 5)) ?>" required />
           <small class="text-muted">e.g. 11:00 PM</small>
         </div>
 
@@ -220,7 +231,7 @@ require_once '../includes/header.php';
         <div class="col-sm-4">
           <label class="field-label">Woke Up *</label>
           <input type="time" name="wake_time" class="field-input" id="wakeTimeInput"
-            value="<?= htmlspecialchars($edit_item['wake_time'] ?? '07:00') ?>" required />
+            value="<?= htmlspecialchars(substr($edit_item['wake_time'] ?? '07:00', 0, 5)) ?>" required />
           <small class="text-muted">e.g. 7:00 AM</small>
         </div>
 
@@ -270,7 +281,7 @@ require_once '../includes/header.php';
   </div>
 </div>
 
-<!-- STATS ROW -->
+<!--  STATS ROW  -->
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-3">
     <div class="sleep-stat-card" style="border-top:3px solid #4f46e5">
@@ -312,7 +323,7 @@ require_once '../includes/header.php';
   </div>
 </div>
 
-<!--7-DAY CHART-->
+<!--  7-DAY CHART  -->
 <?php if ($total_logs > 0): ?>
   <div class="sleep-chart-card mb-4">
     <div class="sleep-chart-header">
@@ -325,7 +336,7 @@ require_once '../includes/header.php';
   </div>
 <?php endif; ?>
 
-<!--SLEEP LOG HISTORY -->
+<!--  SLEEP LOG HISTORY -->
 <div class="sleep-chart-card">
   <div class="sleep-chart-header">
     <span><i class="bi bi-clock-history me-2" style="color:var(--primary)"></i>Sleep History</span>
@@ -423,23 +434,19 @@ require_once '../includes/header.php';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-  // Live hours calculator 
+  //  Live hours calculator
   function calcHours() {
     const sleepVal = document.getElementById('sleepTimeInput').value;
     const wakeVal = document.getElementById('wakeTimeInput').value;
     const preview = document.getElementById('hoursText');
 
-    if (!sleepVal || !wakeVal) {
-      return;
-    }
+    if (!sleepVal || !wakeVal) return;
 
     const [sh, sm] = sleepVal.split(':').map(Number);
     const [wh, wm] = wakeVal.split(':').map(Number);
     let sleepMins = sh * 60 + sm;
     let wakeMins = wh * 60 + wm;
-    if (wakeMins <= sleepMins) {
-      wakeMins += 24 * 60;
-    }
+    if (wakeMins <= sleepMins) wakeMins += 24 * 60;  // overnight
 
     const total = (wakeMins - sleepMins) / 60;
     const hrs = Math.floor(total);
@@ -456,7 +463,7 @@ require_once '../includes/header.php';
   // Run on load if editing
   calcHours();
 
-  // 7-Day Sleep Chart 
+  //  7-Day Sleep Chart
   <?php if ($total_logs > 0): ?>
     const ctx = document.getElementById('sleepChart').getContext('2d');
 

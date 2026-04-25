@@ -74,4 +74,21 @@ $(document).ready(function () {
         }
     }
 
+    // SLEEP FORM TOGGLE 
+    if ($('#toggleSleepBtn').length) {
+        $('#toggleSleepBtn').on('click', function () {
+            const panel = $('#sleepForm');
+            const isOpen = panel.hasClass('open');
+            panel.toggleClass('open');
+            $(this).html(isOpen
+                ? '<i class="bi bi-plus-lg"></i> Log Sleep'
+                : '<i class="bi bi-x-lg"></i> Close Form'
+            );
+        });
+
+        if ($('#sleepForm').hasClass('open')) {
+            $('#toggleSleepBtn').html('<i class="bi bi-x-lg"></i> Close Form');
+        }
+    }
+
 });
