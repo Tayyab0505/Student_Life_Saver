@@ -222,4 +222,156 @@ require_once '../includes/header.php';
   </div>
 </div>
 
+<!-- STATS ROW -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="sleep-stat-card" style="border-top:3px solid #4f46e5">
+      <div class="sleep-stat-icon" style="background:#eef2ff;color:#4f46e5">
+        <i class="bi bi-moon-stars-fill"></i>
+      </div>
+      <div class="sleep-stat-value"><?= $avg_sleep_7 ?: '—' ?>h</div>
+      <div class="sleep-stat-label">Avg Sleep (7 days)</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="sleep-stat-card" style="border-top:3px solid #10b981">
+      <div class="sleep-stat-icon" style="background:#d1fae5;color:#10b981">
+        <i class="bi bi-graph-up"></i>
+      </div>
+      <div class="sleep-stat-value"><?= $avg_sleep_all ?: '—' ?>h</div>
+      <div class="sleep-stat-label">Overall Average</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="sleep-stat-card" style="border-top:3px solid #f59e0b">
+      <div class="sleep-stat-icon" style="background:#fef3c7;color:#f59e0b">
+        <i class="bi bi-journal-text"></i>
+      </div>
+      <div class="sleep-stat-value"><?= $total_logs ?></div>
+      <div class="sleep-stat-label">Days Logged</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="sleep-stat-card" style="border-top:3px solid #ec4899">
+      <div class="sleep-stat-icon" style="background:#fce7f3;color:#ec4899">
+        <i class="bi bi-emoji-smile"></i>
+      </div>
+      <div class="sleep-stat-value" style="font-size:1.5rem">
+        <?= $top_mood ? ($moods[$top_mood]['emoji'] ?? '—') : '—' ?>
+      </div>
+      <div class="sleep-stat-label">Top Mood: <?= $top_mood ?? 'N/A' ?></div>
+    </div>
+  </div>
+</div>
+
+<!--7-DAY CHART-->
+<?php if ($total_logs > 0): ?>
+<div class="sleep-chart-card mb-4">
+  <div class="sleep-chart-header">
+    <span><i class="bi bi-bar-chart-line me-2" style="color:var(--primary)"></i>Last 7 Days Sleep</span>
+    <span class="text-muted" style="font-size:0.78rem">Recommended: 7–9 hours</span>
+  </div>
+  <div class="sleep-chart-body">
+    <canvas id="sleepChart" height="100"></canvas>
+  </div>
+</div>
+<?php endif; ?>
+
+<!--SLEEP LOG HISTORY -->
+<div class="sleep-chart-card">
+  <div class="sleep-chart-header">
+    <span><i class="bi bi-clock-history me-2" style="color:var(--primary)"></i>Sleep History</span>
+    <span class="text-muted" style="font-size:0.78rem">Last 30 entries</span>
+  </div>
+ 
+  <?php if (empty($logs)): ?>
+    <div class="empty-state-page" style="padding:3rem 1rem">
+      <i class="bi bi-moon"></i>
+      <h5>No sleep logs yet</h5>
+      <p>Click "Log Sleep" above to start tracking your rest.</p>
+    </div>
+  <?php else: ?>
+    <div class="sleep-log-list">
+      <?php foreach ($logs as $log):
+        $mood_cfg   = $moods[$log['mood']] ?? $moods['Good'];
+        $hours      = (float)$log['hours_slept'];
+        $quality    = $hours >= 7 ? 'good' : ($hours >= 5 ? 'okay' : 'poor');
+        $quality_colors = [
+          'good' => ['bar' => '#10b981', 'bg' => '#d1fae5', 'text' => '#065f46'],
+          'okay' => ['bar' => '#f59e0b', 'bg' => '#fef3c7', 'text' => '#92400e'],
+          'poor' => ['bar' => '#ef4444', 'bg' => '#fee2e2', 'text' => '#991b1b'],
+        ];
+        $qc = $quality_colors[$quality];
+      ?>
+        <div class="sleep-log-row">
+ 
+          <!-- Date block -->
+          <div class="sleep-log-date">
+            <div class="sleep-log-day"><?= date('D', strtotime($log['log_date'])) ?></div>
+            <div class="sleep-log-dnum"><?= date('j', strtotime($log['log_date'])) ?></div>
+            <div class="sleep-log-month"><?= date('M', strtotime($log['log_date'])) ?></div>
+          </div>
+ 
+          <!-- Times -->
+          <div class="sleep-log-times">
+            <div class="sleep-time-row">
+              <i class="bi bi-moon-fill" style="color:#6366f1;font-size:0.75rem"></i>
+              <?= date('g:i A', strtotime($log['sleep_time'])) ?>
+            </div>
+            <div class="sleep-time-arrow"><i class="bi bi-arrow-down"></i></div>
+            <div class="sleep-time-row">
+              <i class="bi bi-sun-fill" style="color:#f59e0b;font-size:0.75rem"></i>
+              <?= date('g:i A', strtotime($log['wake_time'])) ?>
+            </div>
+          </div>
+ 
+          <!-- Hours + quality bar -->
+          <div class="sleep-log-hours">
+            <div class="sleep-hours-badge"
+                 style="background:<?= $qc['bg'] ?>;color:<?= $qc['text'] ?>">
+              <?= number_format($hours, 1) ?>h
+            </div>
+            <div class="sleep-quality-bar-track">
+              <!-- bar width = hours / 10 * 100, capped at 100% -->
+              <div class="sleep-quality-bar-fill"
+                   style="width:<?= min(100, round(($hours/10)*100)) ?>%;background:<?= $qc['bar'] ?>">
+              </div>
+            </div>
+            <div class="sleep-quality-label" style="color:<?= $qc['text'] ?>">
+              <?= ucfirst($quality) ?> sleep
+            </div>
+          </div>
+ 
+          <!-- Mood -->
+          <div class="sleep-log-mood">
+            <span class="mood-tag"
+                  style="background:<?= $mood_cfg['bg'] ?>;color:<?= $mood_cfg['color'] ?>">
+              <?= $mood_cfg['emoji'] ?> <?= $log['mood'] ?>
+            </span>
+            <?php if ($log['notes']): ?>
+              <div class="sleep-log-note" title="<?= htmlspecialchars($log['notes']) ?>">
+                <i class="bi bi-chat-left-text"></i>
+                <?= htmlspecialchars(mb_substr($log['notes'], 0, 35)) ?><?= strlen($log['notes']) > 35 ? '…' : '' ?>
+              </div>
+            <?php endif; ?>
+          </div>
+ 
+          <!-- Actions -->
+          <div class="sleep-log-actions">
+            <a href="sleep.php?edit=<?= $log['id'] ?>" class="icon-btn btn-edit" title="Edit">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="sleep.php?delete=<?= $log['id'] ?>"
+               class="icon-btn btn-delete" title="Delete"
+               onclick="return confirm('Delete this sleep log?')">
+              <i class="bi bi-trash3"></i>
+            </a>
+          </div>
+ 
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+</div>
+
 <?php require_once '../includes/footer.php'; ?>
