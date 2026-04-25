@@ -7,6 +7,32 @@ $active_page = 'sleep';
 $errors = [];
 $edit_item = null;
 
+// Mood config
+$moods = [
+    'Great' => ['emoji' => '😄', 'color' => '#10b981', 'bg' => '#d1fae5'],
+    'Good' => ['emoji' => '🙂', 'color' => '#06b6d4', 'bg' => '#cffafe'],
+    'Okay' => ['emoji' => '😐', 'color' => '#f59e0b', 'bg' => '#fef3c7'],
+    'Tired' => ['emoji' => '😴', 'color' => '#8b5cf6', 'bg' => '#ede9fe'],
+    'Exhausted' => ['emoji' => '😫', 'color' => '#ef4444', 'bg' => '#fee2e2'],
+];
+
+// Handle DELETE
+if (isset($_GET['delete'])) {
+    $del_id = (int) $_GET['delete'];
+    $stmt = $pdo->prepare("DELETE FROM sleep_log WHERE id = ? AND user_id = ?");
+    $stmt->execute([$del_id, $current_user_id]);
+    header('Location: sleep.php?msg=deleted');
+    exit;
+}
+
+// Load log for editing
+if (isset($_GET['edit'])) {
+    $edit_id = (int) $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM sleep_log WHERE id = ? AND user_id = ?");
+    $stmt->execute([$edit_id, $current_user_id]);
+    $edit_item = $stmt->fetch();
+}
+
 require_once '../includes/header.php';
 ?>
 
