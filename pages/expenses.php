@@ -75,9 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POS
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type']) && $_POST['form_type'] === 'budget') {
     $limit = $_POST['monthly_limit'] ?? '';
     $monthly_val = $_POST['month_year'] ?? date('Y-m');
+
+    if (empty($monthly_val)) {
+        $monthly_val = date('Y-m');
+    }
+
     if (is_numeric($limit) && $limit > 0) {
         $stmt = $pdo->prepare("INSERT INTO budget_goals (user_id, month_year, monthly_limit) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE monthly_limit = VALUES(monthly_limit)");
-        $stmt->execute([$current_user_id, $month_val, $limit]);
+        $stmt->execute([$current_user_id, $monthly_val, $limit]);
         header('Location: expenses.php?msg=budget_set');
         exit;
     }
