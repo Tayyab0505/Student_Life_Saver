@@ -33,6 +33,70 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
+// Handle ADD / UPDATE 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $log_date   = $_POST['log_date']   ?? '';
+    $sleep_time = $_POST['sleep_time'] ?? '';
+    $wake_time  = $_POST['wake_time']  ?? '';
+    $mood       = $_POST['mood']       ?? 'Good';
+    $notes      = trim($_POST['notes'] ?? '');
+    $post_id    = (int)($_POST['edit_id'] ?? 0);
+ 
+    // Validation
+    if ($log_date === ''){    
+        $errors[] = 'Please select the date.';
+    } 
+    if ($sleep_time === ''){
+        $errors[] = 'Sleep time is required.';
+    } 
+    if ($wake_time === ''){    
+        $errors[] = 'Wake time is required.';
+    } 
+    if (!array_key_exists($mood, $moods)){
+        $errors[] = 'Invalid mood selected.';
+    } 
+ 
+    // Calculate hours slept 
+    $hours_slept = null;
+    if ($sleep_time && $wake_time) {
+        [$sh, $sm] = explode(':', $sleep_time);
+        [$wh, $wm] = explode(':', $wake_time);
+        $sleep_mins = (int)$sh * 60 + (int)$sm;
+        $wake_mins  = (int)$wh * 60 + (int)$wm;
+ 
+        // If wake time is earlier than sleep time → slept past midnight
+        if ($wake_mins <= $sleep_mins) {
+            $wake_mins += 24 * 60; 
+        }
+ 
+        $hours_slept = round(($wake_mins - $sleep_mins) / 60, 2);
+ 
+        if ($hours_slept > 20) {
+            $errors[] = 'Calculated hours seems too long. Check your times.';
+        }
+        if ($hours_slept <= 0) {
+            $errors[] = 'Wake time must be after sleep time.';
+        }
+    }
+ 
+    if (empty($errors)) {
+        if ($post_id > 0) {
+            // UPDATE — replace existing log
+            $stmt = $pdo->prepare("UPDATE sleep_log SET log_date=?, sleep_time=?, wake_time=?, hours_slept=?, mood=?, notes=? WHERE id=? AND user_id=?
+            ");
+            $stmt->execute([$log_date,$sleep_time,$wake_time,$hours_slept,$mood,$notes,$post_id,$current_user_id]);
+            header('Location: sleep.php?msg=updated');
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO sleep_log (user_id,log_date,sleep_time,wake_time,hours_slept,mood,notes) VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE sleep_time=VALUES(sleep_time), wake_time=VALUES(wake_time), hours_slept=VALUES(hours_slept), mood=VALUES(mood), notes=VALUES(notes)");
+            $stmt->execute([$current_user_id,$log_date,$sleep_time,$wake_time,$hours_slept,$mood,$notes]);
+            header('Location: sleep.php?msg=added');
+        }
+        exit;
+    }
+ 
+    $edit_item = compact('log_date','sleep_time','wake_time','mood','notes') + ['id' => $post_id];
+}
+
 require_once '../includes/header.php';
 ?>
 
