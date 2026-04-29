@@ -92,11 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (empty($errors)) {
     if ($post_id > 0) {
       // UPDATE — replace existing log
-      $stmt = $pdo->prepare("UPDATE sleep_log SET log_date=?, sleep_time=?, wake_time=?, hours_slept=?, mood=?, notes=? WHERE id=? AND user_id=");
+      $stmt = $pdo->prepare("UPDATE sleep_log SET log_date=?, sleep_time=?, wake_time=?, hours_slept=?, mood=?, notes=? WHERE id=? AND user_id=?");
       $stmt->execute([$log_date, $sleep_time, $wake_time, $hours_slept, $mood, $notes, $post_id, $current_user_id]);
       header('Location: sleep.php?msg=updated');
     } else {
-      $stmt = $pdo->prepare("INSERT INTO sleep_log (user_id,log_date,sleep_time,wake_time,hours_slept,mood,notes) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE sleep_time=VALUES(sleep_time), wake_time=VALUES(wake_time), hours_slept=VALUES(hours_slept), mood=VALUES(mood notes=VALUES(notes)");
+      $stmt = $pdo->prepare("INSERT INTO sleep_log (user_id,log_date,sleep_time,wake_time,hours_slept,mood,notes) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE sleep_time=VALUES(sleep_time), wake_time=VALUES(wake_time), hours_slept=VALUES(hours_slept), mood=VALUES(mood), notes=VALUES(notes)");
       $stmt->execute([$current_user_id, $log_date, $sleep_time, $wake_time, $hours_slept, $mood, $notes]);
       header('Location: sleep.php?msg=added');
     }

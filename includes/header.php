@@ -57,10 +57,6 @@ $active_page = $active_page ?? '';
                 class="nav-item <?= $active_page === 'sleep' ? 'active' : '' ?>">
                 <i class="bi bi-moon-stars"></i> <span>Sleep & Routine</span>
             </a>
-            <a href=/STUDENT_LIFE_SAVER/pages/progress.php"
-                class="nav-item <?= $active_page === 'progress' ? 'active' : '' ?>">
-                <i class="bi bi-bar-chart-line"></i> <span>Progress</span>
-            </a>
         </nav>
 
         <div class="sidebar-footer">

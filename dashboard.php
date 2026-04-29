@@ -36,11 +36,7 @@ $stmt->execute([$current_user_id, $today]);
 $todays_classes = $stmt->fetchAll();
 
 // Upcoming assignments (next 7 days)
-$stmt = $pdo->prepare("SELECT * FROM assignments
-    WHERE user_id = ?
-      AND status != 'Completed'
-      AND due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-    ORDER BY due_date ASC LIMIT 5");
+$stmt = $pdo->prepare("SELECT * FROM assignments WHERE user_id = ? AND status != 'Completed' AND due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) ORDER BY due_date ASC LIMIT 5");
 $stmt->execute([$current_user_id]);
 $upcoming = $stmt->fetchAll();
 
